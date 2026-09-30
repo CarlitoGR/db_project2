@@ -1,0 +1,26 @@
+faculty_id,name,department,office_hours_location,email,phone,sections,enrollment,oh_required_hours,oh_assigned_hours
+CT01,Anthony Adedoyin,Computer Technology (CTEC),Office TBA,,,3,53,3.00,3.00
+CT02,Ruth Agada,Computer Technology (CTEC),Office TBA,,,3,24,3.00,3.00
+CT03,P. Agboli,Computer Technology (CTEC),Office TBA,,,2,19,3.00,3.00
+CT04,R. Baptiste,Computer Technology (CTEC),Office TBA,,,3,55,3.00,3.00
+CT05,Jesse Bemley,Computer Technology (CTEC),Office TBA,,,3,24,3.00,3.00
+CT06,Staphord Bengesi,Computer Technology (CTEC),Office TBA,,,3,47,3.00,3.00
+CT07,Marvin Bright,Computer Technology (CTEC),Online (virtual),,,2,7,3.00,3.00
+CT08,Adrian D. Carter,Computer Technology (CTEC),Office TBA,,,3,33,3.00,3.00
+CT09,Pierrot Chery,Computer Technology (CTEC),Office TBA,,,3,45,3.00,3.00
+CT10,Henri E. Cooper,Computer Technology (CTEC),Online (virtual),,,1,22,3.00,3.00
+CT11,Loubna Dali,Computer Technology (CTEC),Office TBA,,,2,33,3.00,3.00
+CT12,Shawn Deal,Computer Technology (CTEC),Office TBA,,,1,6,3.00,3.00
+CT13,Carl Dixon,Computer Technology (CTEC),Office TBA,,,2,28,3.00,3.00
+CT14,Wilbert R. Francis,Computer Technology (CTEC),Office TBA,,,1,13,3.00,3.00
+CT15,Eugene T. Harris,Computer Technology (CTEC),Office TBA,,,2,36,3.00,3.00
+CT16,Courtney Lamar,Computer Technology (CTEC),Online (virtual),,,1,6,3.00,3.00
+CT17,Victoria Lee,Computer Technology (CTEC),Office TBA,,,1,23,3.00,3.00
+CT18,Stephanie R. Miller,Computer Technology (CTEC),Office TBA,,,1,3,3.00,3.00
+CT19,Felix Njeh,Computer Technology (CTEC),Online (virtual),,,1,3,3.00,3.00
+CT20,Henry Okonofua,Computer Technology (CTEC),Office TBA,,,2,35,3.00,3.00
+CT21,Curtis Roberts,Computer Technology (CTEC),Office TBA,,,3,49,3.00,3.00
+CT22,Dr. D. B. Stone,Computer Technology (CTEC),Office TBA,,,4,48,4.00,4.00
+CT23,Brett Tolbert,Computer Technology (CTEC),Office TBA,,,2,22,3.00,3.00
+CT24,J. Vega,Computer Technology (CTEC),Office TBA,,,3,37,3.00,3.00
+CT25,Marcella J. Wilson,Computer Technology (CTEC),Office TBA,,,4,44,4.00,4.00

@@ -1,0 +1,10 @@
+ID,Course Title,CR ,Days,Begin,End ,Room,Instructor 2025,Enroll,Enroll #
+TEST 100.170,Instructor Clash A (7R1),3,MW,4:00 PM,6:50 PM,108,"One, Test",,10
+TEST 101.170,Instructor Clash B (7R1),3,W,6:00 PM,7:00 PM,109,Test One,,10
+TEST 100.180,Same Slot Other Session - OK (7R2),3,MW,4:00 PM,6:50 PM,108,"One, Test",,10
+TEST 102.170,Split Room Clash (7R1),3,M,5:00 PM,6:00 PM,201/108,"Two, Test",,10
+TEST 103.170,Online Same Time - OK (7R1),3,MW,4:00 PM,6:50 PM,Online,"Two, Test",,10
+TEST 104.170,Unknown Instructor (7R1),3,F,9:00 AM,10:00 AM,110,"Nobody, Anne",,10
+TEST 105.180,Missing PM (7R2),3,TR,12:00 PM,3:15,111,"Two, Test",,10
+TEST 106.180,Zero Length (7R2),3,MWF,5:00 PM,5:00 PM,Online,"Two, Test",,10
+TEST 107.555,Async Section (7R1),3,,On-line Asynchronous Course,,Online,"Two, Test",,10

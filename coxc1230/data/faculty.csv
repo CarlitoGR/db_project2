@@ -1,0 +1,31 @@
+# Input file 2 of 2: faculty / professor information file (stored locally on the lab computer).
+# aliases: every spelling of the instructor's name used in the class schedule (';'-separated).
+# office: fill in to replace 'Office TBA' (online-only instructors default to 'Online (virtual)').
+# oh_hours_per_week blank = policy default max(3 h, 1 h per section). preferred_days blank = teaching days.
+# fixed_office_hours: hours supplied by the lecturer, e.g. "MW 3:00 PM-4:00 PM"; any that overlap a class are dropped.
+faculty_id,name,aliases,department,office,email,phone,courses_taught,oh_hours_per_week,oh_block_minutes,preferred_days,available_start,available_end,fixed_office_hours
+CT01,Anthony Adedoyin,"Adedoyin, Anthony",Computer Technology (CTEC),,,,CTEC 350.170;CTEC 350.180;CTEC 435.170,,60,,9:00 AM,9:00 PM,
+CT02,Ruth Agada,Ruth Agada,Computer Technology (CTEC),,,,CTEC 711.555;CTEC 402.180;CTEC 435.180,,60,,9:00 AM,9:00 PM,
+CT03,P. Agboli,"Agboli, P.",Computer Technology (CTEC),,,,CTEC 120.171;CTEC 300.170,,60,,9:00 AM,9:00 PM,
+CT04,R. Baptiste,"Baptiste, R.",Computer Technology (CTEC),,,,CTEC 214.180;CTEC 302.170;CTEC 302.180,,60,,9:00 AM,9:00 PM,
+CT05,Jesse Bemley,"Bemley;Bemley, J;Bemley, Jesse",Computer Technology (CTEC),,,,CTEC 128.170;CTEC 298.180;CTEC 671.555,,60,,9:00 AM,9:00 PM,
+CT06,Staphord Bengesi,Staphord Bengesi,Computer Technology (CTEC),,,,CTEC 111.171;CTEC 402.170;CTEC 445.180,,60,,9:00 AM,9:00 PM,
+CT07,Marvin Bright,"Bright, Marvin",Computer Technology (CTEC),,,,CTEC 720.555;CTEC 721.555,,60,,9:00 AM,9:00 PM,
+CT08,Adrian D. Carter,"Carter, Adrian D.",Computer Technology (CTEC),,,,CTEC 424.555;CTEC 445.170;CTEC 450.170,,60,,9:00 AM,9:00 PM,
+CT09,Pierrot Chery,"Chery, Pierrot",Computer Technology (CTEC),,,,CTEC 305.170;CTEC 305.180;CTEC 405.170,,60,,9:00 AM,9:00 PM,
+CT10,Henri E. Cooper,Henri E. Cooper,Computer Technology (CTEC),,,,CTEC 111.173,,60,,9:00 AM,9:00 PM,
+CT11,Loubna Dali,Loubna Dali,Computer Technology (CTEC),,,,CTEC 450.180;CTEC 111.170,,60,,9:00 AM,9:00 PM,
+CT12,Shawn Deal,"Deal, Shawn",Computer Technology (CTEC),,,,CTEC 226.180,,60,,9:00 AM,9:00 PM,
+CT13,Carl Dixon,"Dixon, Carl",Computer Technology (CTEC),,,,CTEC 294.170;CTEC 294.180,,60,,9:00 AM,9:00 PM,
+CT14,Wilbert R. Francis,"Francis, Wilbert R.",Computer Technology (CTEC),,,,CTEC 475.180,,60,,9:00 AM,9:00 PM,
+CT15,Eugene T. Harris,Eugene Harris;Eugene T. Harris,Computer Technology (CTEC),,,,CTEC 111.172;CTEC 114.172,,60,,9:00 AM,9:00 PM,
+CT16,Courtney Lamar,"Lamar, Courtney",Computer Technology (CTEC),,,,CTEC 393.555,,60,,9:00 AM,9:00 PM,
+CT17,Victoria Lee,Victoria Lee,Computer Technology (CTEC),,,,CTEC 114.170,,60,,9:00 AM,9:00 PM,
+CT18,Stephanie R. Miller,"Miller, Stephanie R.",Computer Technology (CTEC),,,,CTEC 426.170,,60,,9:00 AM,9:00 PM,
+CT19,Felix Njeh,"Njeh, Felix",Computer Technology (CTEC),,,,CTEC 651.555,,60,,9:00 AM,9:00 PM,
+CT20,Henry Okonofua,"Okonofua, Henry",Computer Technology (CTEC),,,,CTEC 410.170;CTEC 410.180,,60,,9:00 AM,9:00 PM,
+CT21,Curtis Roberts,"Roberts, Curtis",Computer Technology (CTEC),,,,CTEC 222.170;CTEC 335.170;CTEC 335.180,,60,,9:00 AM,9:00 PM,
+CT22,Dr. D. B. Stone,"Dr. Stone, D. B.",Computer Technology (CTEC),,,,CTEC 120.170;CTEC 125.555;CTEC 125.556;CTEC 324.555,,60,,9:00 AM,9:00 PM,
+CT23,Brett Tolbert,Brett Tolbert,Computer Technology (CTEC),,,,CTEC 345.170;CTEC 345.180,,60,,9:00 AM,9:00 PM,
+CT24,J. Vega,"Vega, J.",Computer Technology (CTEC),,,,CTEC 220.170;CTEC 220.180;CTEC 230.180,,60,,9:00 AM,9:00 PM,
+CT25,Marcella J. Wilson,"Wilson, Marcella J.",Computer Technology (CTEC),,,,CTEC 128.180;CTEC 230.170;CTEC 293.170;CTEC 415.180,,60,,9:00 AM,9:00 PM,

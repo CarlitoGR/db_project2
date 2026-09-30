@@ -1,0 +1,57 @@
+ID,Course Title,CR ,Days,Begin,End ,Room,Instructor 2025,Enroll,Enroll #
+CTEC 350.170,Prin & Meth of Intru Det & Pre (7R1),3,MW,4:00 PM,6:50 PM,108,"Adedoyin, Anthony",,22
+CTEC 350.180,Prin & Meth of Intru Det & Pre (7R2),3,MW,4:00 PM,6:50 PM,108,"Adedoyin, Anthony",,18
+CTEC 435.170,UNIX System Administration (7R1),3,MW,7:00 PM,9:50 PM,108,"Adedoyin, Anthony",,13
+CTEC 120.171,Prin of SecureCoding Using Jav (7R1),4,MW,5:00 PM,7:00 PM,201/112,"Agboli, P.",,11
+CTEC 300.170,Database Achitecture (7R1),3,MW,7:00 PM,9:50 PM,112,"Agboli, P.",,8
+CTEC 214.180,Client Operating Systs (7R2),4,TR,12:00 PM,3:40 PM,109,"Baptiste, R.",,12
+CTEC 302.170,Computer Networking (7R1),3,TR,4:00 PM,6:50 PM,Dept,"Baptiste, R.",,24
+CTEC 302.180,Computer Networking (7R2),3,TR,4:00 PM,6:50 PM,111,"Baptiste, R.",,19
+CTEC 128.170,Discrete Structures - Big Data (7R1),3,TR,12:00 PM,2:50 PM,Online,Bemley,,16
+CTEC 298.180,Symbolic Computation use BigDa (7R2),3,TR,4:00 PM,6:50 PM,108,"Bemley, J",,5
+CTEC 671.555,Smart Integrated Systems  (7R1)  ,3,TR,4:00 PM,6:50 PM,Online,"Bemley, Jesse",,3
+CTEC 711.555,IoT Capstone I (7R2),3,MWF,5:00 PM,5:00 PM,Online,Ruth Agada,,4
+CTEC 720.555,Master's Thesis Research I (7R2) ,3,MW,7:00 PM,9:50 PM,Online,"Bright, Marvin",,3
+CTEC 721.555,Master's Thesis Research II  (7R2) ,3,TR,7:00 PM,9:50 AM,Online,"Bright, Marvin",,4
+CTEC 424.555,Database Administration (7R2),3,TR,7:00 PM,9:50 PM,Online,"Carter, Adrian D.",,5
+CTEC 445.170,Fund of Cryptography & Applica (7R1),3,MW,4:00 PM,6:50 PM,111,"Carter, Adrian D.",,17
+CTEC 450.170,Case Studies in Comp Security (7R1),3,MW,7:00 PM,9:50 PM,111,"Carter, Adrian D.",,11
+CTEC 305.170,Server Administration I (7R1),3,TR,4:00 PM,6:50 PM,Dept,"Chery, Pierrot",,19
+CTEC 305.180,Server Administration I (7R2),3,TR,4:00 PM,6:50 PM,109,"Chery, Pierrot",,13
+CTEC 405.170,Server Administration II (7R1),3,TR,7:00 PM,9:50 PM,109,"Chery, Pierrot",,13
+CTEC 226.180,Intro To Db Development (7R2),3,TR,7:00 PM,9:50 PM,116,"Deal, Shawn",,6
+CTEC 294.170 ,PC Architecture (7R1),3,MW,4:00 PM,6:50 PM,112,"Dixon, Carl",,16
+CTEC 294.180,PC Architecture (7R2),3,MW,4:00 PM,6:50 PM,112,"Dixon, Carl",,12
+CTEC 120.170,Prin of SecureCoding Using Jav (7R1),4,MW,12:00 PM,3:15 AM,116,"Dr. Stone, D. B.",,2
+CTEC 125.555,Intro to Python programming (7R1) ,3,,On-line Asynchronous Course,,Online,"Dr. Stone, D. B.",,22
+CTEC 125.556,Intro to Python programming (7R2) ,3,,On-line Asynchronous Course,,Online,"Dr. Stone, D. B.",,22
+CTEC 324.555,Database Appl Dev (7R2),3,MW,4:00 PM,6:50 PM,online,"Dr. Stone, D. B.",,2
+CTEC 111.172,Cybersecurity for All (7R1),3,TR,8:00 AM,10:50 AM,111,Eugene Harris,OS,19
+CTEC 114.172,Comp Tools & Environ (7R1),3,TR,4:00 PM,6:50 PM,114,Eugene T. Harris,,17
+CTEC 475.180,Cloud Computing (7R2),3,MW,7:00 PM,9:50 PM,114,"Francis, Wilbert R.",,13
+CTEC 111.173,Cybersecurity for All (7R1),3,MW,4:00 PM,6:50 PM,Online,Henri E. Cooper,OS,22
+CTEC 111.171,Cybersecurity for All (7R1),3,MW,8:00 AM,10:50 AM,Online,Staphord Bengesi,OS,22
+CTEC 393.555,Internet Prog II (7R2),3,MW,4:00 PM,6:50 PM,Online,"Lamar, Courtney",,6
+CTEC 426.170,Expert Systems Using Big Data (7R1),3,MW,7:00 PM,9:50 PM,114,"Miller, Stephanie R.",,3
+CTEC 651.555,Internet of Things of Digital Res (7R1)  ,3,MW,4:00 PM,6:50 PM,Online,"Njeh, Felix",,3
+CTEC 410.170,Internet Technology (7R1),3,TR,4:00 PM,6:50 PM,201,"Okonofua, Henry",,15
+CTEC 410.180,Internet Technology (7R2),3,TR,4:00 PM,6:50 PM,201,"Okonofua, Henry",,20
+CTEC 222.170,Linux Operating System (7R1),3,TR,7:00 PM,9:50 PM,108,"Roberts, Curtis",,16
+CTEC 335.170,Network Protocols (TCP/IP) (7R1),3,TR,4:00 PM,6:50 PM,116,"Roberts, Curtis",,11
+CTEC 335.180,Network Protocols (TCP/IP) (7R2),3,TR,4:00 PM,6:50 PM,116,"Roberts, Curtis",,22
+CTEC 345.170,Found of Comp and Network Secu (7R1),3,MW,5:00 PM,7:50 PM,109,Brett Tolbert,,11
+CTEC 345.180,Found of Comp and Network Secu (7R2),3,MW,5:00 PM,7:50 PM,111,Brett Tolbert,,11
+CTEC 402.170,Software and OS Security (7R1),3,MW,7:00 PM,9:50 PM,Online,Staphord Bengesi,,16
+CTEC 402.180,Software and OS Security (7R2),3,MW,7:00 PM,9:50 PM,Online,Ruth Agada,,14
+CTEC 435.180,UNIX System Administration (7R2),3,MW,7:00 PM,9:50 PM,108,Ruth Agada,,6
+CTEC 445.180,Fund of Cryptography & Applica (7R2),3,MW,4:00 PM,6:50 PM,109,Staphord Bengesi,,9
+CTEC 450.180,Case Studies in Comp Security (7R2),3,MW,7:00 PM,9:50 PM,111,Loubna Dali,,11
+CTEC 111.170,Cybersecurity for All (7R1),3,TR,9:00 AM,11:50 AM,Online,Loubna Dali,OS,22
+CTEC 220.170,Adv Secure Coding Using Java (7R1),4,MW,11:00 AM,1:50 PM,114,"Vega, J.",,15
+CTEC 220.180,Adv Secure Coding Using Java (7R2),4,MW,11:00 AM,1:50 PM,114,"Vega, J.",,10
+CTEC 230.180,Application of Data Structures (7R2),4,MW,4:00 PM,6:50 PM,114,"Vega, J.",,12
+CTEC 114.170,Comp Tools & Environ (7R1),3,MW,4:00 PM,6:50 PM,116,Victoria Lee,OS,23
+CTEC 128.180,Discrete Structures - Big Data (7R2),3,TR,4:00 PM,6:50 PM,Online,"Wilson, Marcella J.",,9
+CTEC 230.170,Application of Data Structures (7R1),4,TR,11:00 AM,2:40 PM,114,"Wilson, Marcella J.",,14
+CTEC 293.170,Edge Technology (7R1),3,MW,4:00 PM,6:50 PM,114,"Wilson, Marcella J.",,5
+CTEC 415.180,Edge Computing (7R2),3,TR,10:00 AM,12:50 PM,114,"Wilson, Marcella J.",,16

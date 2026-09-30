@@ -1,0 +1,4 @@
+# Deliberately inconsistent faculty file used by 'make test'.
+faculty_id,name,aliases,department,office,email,phone,courses_taught,oh_hours_per_week,oh_block_minutes,preferred_days,available_start,available_end,fixed_office_hours
+T001,Test One,"One, Test",Test,T 201,,,TEST 100.170;TEST 101.170;TEST 100.180,3,60,,9:00 AM,9:00 PM,"M 5:00 PM-6:00 PM"
+T002,Test Two,"Two, Test",Test,,,,TEST 102.170;TEST 999.170,,60,,9:00 AM,9:00 PM,

@@ -1,0 +1,50 @@
+faculty_id,faculty_name,days,days_display,start_time,end_time,hours_display,times_display,location,source
+CT01,Anthony Adedoyin,M,Monday,1:45 PM,3:45 PM,1:45 PM to 3:45 PM,Monday 1:45 PM to 3:45 PM,Office TBA,Generated
+CT01,Anthony Adedoyin,W,Wednesday,2:45 PM,3:45 PM,2:45 PM to 3:45 PM,Wednesday 2:45 PM to 3:45 PM,Office TBA,Generated
+CT02,Ruth Agada,M,Monday,4:45 PM,6:45 PM,4:45 PM to 6:45 PM,Monday 4:45 PM to 6:45 PM,Office TBA,Generated
+CT02,Ruth Agada,W,Wednesday,5:45 PM,6:45 PM,5:45 PM to 6:45 PM,Wednesday 5:45 PM to 6:45 PM,Office TBA,Generated
+CT03,P. Agboli,M,Monday,2:45 PM,4:45 PM,2:45 PM to 4:45 PM,Monday 2:45 PM to 4:45 PM,Office TBA,Generated
+CT03,P. Agboli,W,Wednesday,3:45 PM,4:45 PM,3:45 PM to 4:45 PM,Wednesday 3:45 PM to 4:45 PM,Office TBA,Generated
+CT04,R. Baptiste,TR,Tuesday & Thursday,10:45 AM,11:45 AM,10:45 AM to 11:45 AM,Tuesday & Thursday 10:45 AM to 11:45 AM,Office TBA,Generated
+CT04,R. Baptiste,T,Tuesday,7:15 PM,8:15 PM,7:15 PM to 8:15 PM,Tuesday 7:15 PM to 8:15 PM,Office TBA,Generated
+CT05,Jesse Bemley,TR,Tuesday & Thursday,10:45 AM,11:45 AM,10:45 AM to 11:45 AM,Tuesday & Thursday 10:45 AM to 11:45 AM,Office TBA,Generated
+CT05,Jesse Bemley,T,Tuesday,7:15 PM,8:15 PM,7:15 PM to 8:15 PM,Tuesday 7:15 PM to 8:15 PM,Office TBA,Generated
+CT06,Staphord Bengesi,MW,Monday & Wednesday,11:15 AM,12:15 PM,11:15 AM to 12:15 PM,Monday & Wednesday 11:15 AM to 12:15 PM,Office TBA,Generated
+CT06,Staphord Bengesi,M,Monday,2:45 PM,3:45 PM,2:45 PM to 3:45 PM,Monday 2:45 PM to 3:45 PM,Office TBA,Generated
+CT07,Marvin Bright,MTW,"Monday, Tuesday & Wednesday",5:45 PM,6:45 PM,5:45 PM to 6:45 PM,"Monday, Tuesday & Wednesday 5:45 PM to 6:45 PM",Online (virtual),Generated
+CT08,Adrian D. Carter,MW,Monday & Wednesday,2:45 PM,3:45 PM,2:45 PM to 3:45 PM,Monday & Wednesday 2:45 PM to 3:45 PM,Office TBA,Generated
+CT08,Adrian D. Carter,T,Tuesday,5:45 PM,6:45 PM,5:45 PM to 6:45 PM,Tuesday 5:45 PM to 6:45 PM,Office TBA,Generated
+CT09,Pierrot Chery,T,Tuesday,1:45 PM,3:45 PM,1:45 PM to 3:45 PM,Tuesday 1:45 PM to 3:45 PM,Office TBA,Generated
+CT09,Pierrot Chery,R,Thursday,2:45 PM,3:45 PM,2:45 PM to 3:45 PM,Thursday 2:45 PM to 3:45 PM,Office TBA,Generated
+CT10,Henri E. Cooper,MW,Monday & Wednesday,2:45 PM,3:45 PM,2:45 PM to 3:45 PM,Monday & Wednesday 2:45 PM to 3:45 PM,Online (virtual),Generated
+CT10,Henri E. Cooper,M,Monday,7:15 PM,8:15 PM,7:15 PM to 8:15 PM,Monday 7:15 PM to 8:15 PM,Online (virtual),Generated
+CT11,Loubna Dali,MW,Monday & Wednesday,5:45 PM,6:45 PM,5:45 PM to 6:45 PM,Monday & Wednesday 5:45 PM to 6:45 PM,Office TBA,Generated
+CT11,Loubna Dali,T,Tuesday,12:15 PM,1:15 PM,12:15 PM to 1:15 PM,Tuesday 12:15 PM to 1:15 PM,Office TBA,Generated
+CT12,Shawn Deal,T,Tuesday,4:45 PM,6:45 PM,4:45 PM to 6:45 PM,Tuesday 4:45 PM to 6:45 PM,Office TBA,Generated
+CT12,Shawn Deal,R,Thursday,5:45 PM,6:45 PM,5:45 PM to 6:45 PM,Thursday 5:45 PM to 6:45 PM,Office TBA,Generated
+CT13,Carl Dixon,MW,Monday & Wednesday,2:45 PM,3:45 PM,2:45 PM to 3:45 PM,Monday & Wednesday 2:45 PM to 3:45 PM,Office TBA,Generated
+CT13,Carl Dixon,M,Monday,7:15 PM,8:15 PM,7:15 PM to 8:15 PM,Monday 7:15 PM to 8:15 PM,Office TBA,Generated
+CT14,Wilbert R. Francis,M,Monday,4:45 PM,6:45 PM,4:45 PM to 6:45 PM,Monday 4:45 PM to 6:45 PM,Office TBA,Generated
+CT14,Wilbert R. Francis,W,Wednesday,5:45 PM,6:45 PM,5:45 PM to 6:45 PM,Wednesday 5:45 PM to 6:45 PM,Office TBA,Generated
+CT15,Eugene T. Harris,TR,Tuesday & Thursday,11:15 AM,12:15 PM,11:15 AM to 12:15 PM,Tuesday & Thursday 11:15 AM to 12:15 PM,Office TBA,Generated
+CT15,Eugene T. Harris,T,Tuesday,2:45 PM,3:45 PM,2:45 PM to 3:45 PM,Tuesday 2:45 PM to 3:45 PM,Office TBA,Generated
+CT16,Courtney Lamar,MW,Monday & Wednesday,2:45 PM,3:45 PM,2:45 PM to 3:45 PM,Monday & Wednesday 2:45 PM to 3:45 PM,Online (virtual),Generated
+CT16,Courtney Lamar,M,Monday,7:15 PM,8:15 PM,7:15 PM to 8:15 PM,Monday 7:15 PM to 8:15 PM,Online (virtual),Generated
+CT17,Victoria Lee,MW,Monday & Wednesday,2:45 PM,3:45 PM,2:45 PM to 3:45 PM,Monday & Wednesday 2:45 PM to 3:45 PM,Office TBA,Generated
+CT17,Victoria Lee,M,Monday,7:15 PM,8:15 PM,7:15 PM to 8:15 PM,Monday 7:15 PM to 8:15 PM,Office TBA,Generated
+CT18,Stephanie R. Miller,M,Monday,4:45 PM,6:45 PM,4:45 PM to 6:45 PM,Monday 4:45 PM to 6:45 PM,Office TBA,Generated
+CT18,Stephanie R. Miller,W,Wednesday,5:45 PM,6:45 PM,5:45 PM to 6:45 PM,Wednesday 5:45 PM to 6:45 PM,Office TBA,Generated
+CT19,Felix Njeh,MW,Monday & Wednesday,2:45 PM,3:45 PM,2:45 PM to 3:45 PM,Monday & Wednesday 2:45 PM to 3:45 PM,Online (virtual),Generated
+CT19,Felix Njeh,M,Monday,7:15 PM,8:15 PM,7:15 PM to 8:15 PM,Monday 7:15 PM to 8:15 PM,Online (virtual),Generated
+CT20,Henry Okonofua,TR,Tuesday & Thursday,2:45 PM,3:45 PM,2:45 PM to 3:45 PM,Tuesday & Thursday 2:45 PM to 3:45 PM,Office TBA,Generated
+CT20,Henry Okonofua,T,Tuesday,7:15 PM,8:15 PM,7:15 PM to 8:15 PM,Tuesday 7:15 PM to 8:15 PM,Office TBA,Generated
+CT21,Curtis Roberts,T,Tuesday,1:45 PM,3:45 PM,1:45 PM to 3:45 PM,Tuesday 1:45 PM to 3:45 PM,Office TBA,Generated
+CT21,Curtis Roberts,R,Thursday,2:45 PM,3:45 PM,2:45 PM to 3:45 PM,Thursday 2:45 PM to 3:45 PM,Office TBA,Generated
+CT22,Dr. D. B. Stone,MW,Monday & Wednesday,10:45 AM,11:45 AM,10:45 AM to 11:45 AM,Monday & Wednesday 10:45 AM to 11:45 AM,Office TBA,Generated
+CT22,Dr. D. B. Stone,MW,Monday & Wednesday,7:15 PM,8:15 PM,7:15 PM to 8:15 PM,Monday & Wednesday 7:15 PM to 8:15 PM,Office TBA,Generated
+CT23,Brett Tolbert,M,Monday,2:45 PM,4:45 PM,2:45 PM to 4:45 PM,Monday 2:45 PM to 4:45 PM,Office TBA,Generated
+CT23,Brett Tolbert,W,Wednesday,3:45 PM,4:45 PM,3:45 PM to 4:45 PM,Wednesday 3:45 PM to 4:45 PM,Office TBA,Generated
+CT24,J. Vega,MW,Monday & Wednesday,9:45 AM,10:45 AM,9:45 AM to 10:45 AM,Monday & Wednesday 9:45 AM to 10:45 AM,Office TBA,Generated
+CT24,J. Vega,M,Monday,2:15 PM,3:15 PM,2:15 PM to 3:15 PM,Monday 2:15 PM to 3:15 PM,Office TBA,Generated
+CT25,Marcella J. Wilson,MW,Monday & Wednesday,2:45 PM,3:45 PM,2:45 PM to 3:45 PM,Monday & Wednesday 2:45 PM to 3:45 PM,Office TBA,Generated
+CT25,Marcella J. Wilson,TR,Tuesday & Thursday,7:15 PM,8:15 PM,7:15 PM to 8:15 PM,Tuesday & Thursday 7:15 PM to 8:15 PM,Office TBA,Generated

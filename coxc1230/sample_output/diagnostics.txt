@@ -1,0 +1,6 @@
+ERROR: data/class_schedule.csv:13: CTEC 711.555 has an impossible meeting time (5:00 PM-5:00 PM); listed as TBA
+WARNING: data/class_schedule.csv:15: CTEC 721.555 ends before it starts (7:00 PM-9:50 AM); end time read as 9:50 PM
+WARNING: data/class_schedule.csv:25: CTEC 120.170 ends before it starts (12:00 PM-3:15 AM); end time read as 3:15 PM
+ERROR: Room 112 is double-booked: CTEC 120.171 [7R1] MW 5:00 PM to 7:00 PM (room 201/112) overlaps CTEC 294.170 [7R1] MW 4:00 PM to 6:50 PM (room 112)
+ERROR: Room 111 is double-booked: CTEC 345.180 [7R2] MW 5:00 PM to 7:50 PM (room 111) overlaps CTEC 450.180 [7R2] MW 7:00 PM to 9:50 PM (room 111)
+ERROR: Instructor Ruth Agada is double-booked: CTEC 402.180 [7R2] MW 7:00 PM to 9:50 PM overlaps CTEC 435.180 [7R2] MW 7:00 PM to 9:50 PM
