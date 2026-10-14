@@ -26,7 +26,7 @@ PYTHON   ?= python3
 CPPFLAGS := -Iinclude -D_POSIX_C_SOURCE=200809L
 CFLAGS   ?= -std=c11 -O2 -g -Wall -Wextra -Wpedantic -Wshadow -Wstrict-prototypes -Wformat=2
 DEPFLAGS  = -MMD -MP
-LDFLAGS  := -Lbuild
+LDFLAGS   = -L$(BUILD)
 LDLIBS   := -lschedule
 
 # ---- Layout --------------------------------------------------------------------------------------
@@ -138,7 +138,7 @@ venv:
 
 # ---- Tests ---------------------------------------------------------------------------------------
 test: $(TEST_BIN) $(BIN)
-	./$(TEST_BIN)
+	./$(TEST_BIN) $(BUILD)
 	@echo "--- end-to-end: conflicting inputs must be detected (expect exit status 3) ---"
 	@./$(BIN) -q -o $(BUILD)/test_out tests/data/class_schedule_conflict.csv tests/data/faculty_conflict.csv; \
 	 status=$$?; \
