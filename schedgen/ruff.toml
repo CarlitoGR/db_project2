@@ -1,0 +1,3 @@
+# Ruff configuration for the Python helper scripts (scripts/). CI runs `ruff check` and `ruff format --check`.
+line-length = 120
+target-version = "py312"

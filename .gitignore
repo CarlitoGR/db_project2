@@ -1,0 +1,6 @@
+schedgen/build/
+schedgen/build-asan/
+schedgen/output/
+schedgen/.venv/
+.ruff_cache/
+__pycache__/
