@@ -29,7 +29,15 @@ static int g_failed = 0;
         }                                                                                           \
     } while (0)
 
-#define TMP_DIR "build"
+/* Scratch directory for fixture files: argv[1] when given, else "build". Set by main(). */
+static const char *g_tmp_dir = "build";
+
+/* Join g_tmp_dir and name into buf. Returns buf. */
+static const char *tmp_path(char *buf, size_t size, const char *name)
+{
+    snprintf(buf, size, "%s/%s", g_tmp_dir, name);
+    return buf;
+}
 
 static int write_file(const char *path, const char *text)
 {
@@ -112,7 +120,8 @@ static void test_fixed_hours(void)
 
 static void test_csv_reader(void)
 {
-    const char *path = TMP_DIR "/test_quoted.csv";
+    char path_buf[512];
+    const char *path = tmp_path(path_buf, sizeof path_buf, "test_quoted.csv");
     csv_reader r;
     csv_row row;
 
@@ -150,7 +159,8 @@ static void test_csv_reader(void)
 
 static void test_load_department_format(void)
 {
-    const char *path = TMP_DIR "/test_ctec.csv";
+    char path_buf[512];
+    const char *path = tmp_path(path_buf, sizeof path_buf, "test_ctec.csv");
     course_list courses;
     diag_list diags;
     const course_t *c;
@@ -405,8 +415,12 @@ static void test_fixed_hours_dropped_on_clash(void)
     diag_free(&diags);
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
+    if (argc > 1) {
+        g_tmp_dir = argv[1];
+    }
+
     test_parse_time();
     test_parse_days();
     test_fixed_hours();
