@@ -47,6 +47,30 @@ python3 -m pip install -r requirements.txt
 If `pyswip` reports that it cannot find SWI-Prolog, set `SWI_HOME_DIR` to the `PLBASE` value printed by
 `swipl --dump-runtime-variables`.
 
+### Or use Docker (no local setup)
+
+The image contains GCC, make, Python, SWI-Prolog and pyswip, already matched, and is built with the knowledge
+base ready. Run these from this directory:
+
+```bash
+docker build -t schedgen .
+docker run --rm schedgen "What classes does Dr Yang teach?"     # one question
+docker run --rm -it schedgen                                    # interactive ('help', 'quit')
+docker run --rm schedgen make test test-kb                      # every test
+docker run --name sg schedgen make dist                         # the submission zip, then copy it out:
+docker cp sg:/app/dist/Carlson_Cox_COSC631_Midterm.zip . && docker rm sg
+```
+
+Any make target works the same way (`docker run --rm schedgen make demo`). To use your own input files, mount the
+workbook and/or the faculty file over the ones in the image and add `-B` so make rebuilds everything from them:
+
+```bash
+docker run --rm \
+  -v "$PWD/data/CTEC_Fall_2026_Schedule.xlsx:/app/data/CTEC_Fall_2026_Schedule.xlsx:ro" \
+  -v "$PWD/data/faculty.csv:/app/data/faculty.csv:ro" \
+  schedgen make -B ask Q="Who teaches CTEC 350?"
+```
+
 ## 3. Compile and run
 
 Run from this directory. Each step builds whatever the previous one needs, so `make ask` alone also works.
@@ -223,7 +247,7 @@ the data has conflicts, `4` output error.
 
 ```
 schedgen/
-├── Makefile  README.md  requirements.txt
+├── Makefile  README.md  requirements.txt  Dockerfile  docker-entrypoint.sh
 ├── include/         8 headers (schedule.h includes the rest)
 ├── src/main.c       command-line driver, the only C file outside the library
 ├── src/lib/         common.c csv.c diag.c loader.c report.c scheduler.c timeutil.c  -> build/libschedule.a

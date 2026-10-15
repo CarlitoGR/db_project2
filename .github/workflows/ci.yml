@@ -9,6 +9,7 @@
 #   build          -Werror build, static library, inspect archive -> artifact
 #   test           unit + end-to-end tests (GCC and Clang) | ASan/UBSan | Valgrind
 #   docs           Word / Excel / text schedules -> downloadable artifact
+#   docker         build the image; question, every test and make dist inside the container
 #   knowledge-base Python -> Prolog knowledge base; plunit rule tests, Python tests, Q&A demo -> artifact
 #   data-quality   annotates every conflict in the class schedule as a workflow warning
 # =================================================================================================
@@ -231,6 +232,28 @@ jobs:
             schedgen/build/kb_test/qa_demo.txt
           retention-days: 30
           if-no-files-found: error
+
+  # ----------------------------------------------------------------------------------------- docker
+  # The image must build from a clean checkout and pass the same tests inside the container.
+  docker:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build image
+        run: docker build -t schedgen .
+      - name: Answer a question
+        run: |
+          docker run --rm schedgen "What classes does Dr Yang teach?" | tee "$RUNNER_TEMP/answer.txt"
+          grep -q "COSC 631" "$RUNNER_TEMP/answer.txt"
+      - name: All tests inside the container
+        run: docker run --rm schedgen make test test-kb
+      - name: Submission package built inside the container
+        run: |
+          docker run --name dist schedgen make dist
+          docker cp dist:/app/dist/Carlson_Cox_COSC631_Midterm.zip "$RUNNER_TEMP/"
+          docker rm dist
+          python3 -m zipfile -l "$RUNNER_TEMP/Carlson_Cox_COSC631_Midterm.zip" | grep -q "build/libschedule.a"
 
   # ----------------------------------------------------------------------------------- data quality
   # The department's class schedule currently contains real conflicts. They are a finding about the

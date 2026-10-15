@@ -1,0 +1,10 @@
+# Generated locally; the image builds its own.
+build/
+build-asan/
+output/
+dist/
+out_cs/
+.venv/
+.ruff_cache/
+**/__pycache__/
+*.pyc

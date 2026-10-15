@@ -227,7 +227,7 @@ fetch:
 # The zip holds the static library built from exactly these sources, and sample_output/ from this run.
 DIST_NAME := Carlson_Cox_COSC631_Midterm
 DIST_DIR  := dist/$(DIST_NAME)
-DIST_SRC  := Makefile README.md requirements.txt ruff.toml $(wildcard include/*.h) src/main.c $(LIB_SRCS) \
+DIST_SRC  := Makefile README.md requirements.txt ruff.toml Dockerfile docker-entrypoint.sh .dockerignore $(wildcard include/*.h) src/main.c $(LIB_SRCS) \
              $(SCHEDULE_XLSX) $(SYLLABUS) $(FACULTY) $(QUESTIONS) $(SYLLABI) $(wildcard scripts/*.py) $(RULES) \
              $(TEST_SRC) $(wildcard tests/*.py tests/*.pl tests/data/*) docs/report.md docs/report.pdf
 SAMPLES   := $(TXT_OUT) $(CSV_OUT) $(OUT)/diagnostics.txt $(DOCX_OUT) $(XLSX_OUT) $(KB) $(QA_OUT)
