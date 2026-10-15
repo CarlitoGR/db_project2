@@ -1,6 +1,6 @@
 # Faculty Schedule Generator (`schedgen`)
 
-COSC 631 – Software Engineering, Second Project.
+COSC 631 – Software Engineering, Midterm Project.
 
 A C program that reads **exactly two input files**, the department class schedule and a faculty information
 file, and generates each professor's **teaching schedule** and **office-hours schedule**. All scheduling logic
