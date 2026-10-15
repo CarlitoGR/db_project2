@@ -36,6 +36,7 @@ RUN pip install --no-cache-dir -r /tmp/requirements.txt
 # and dist/.
 WORKDIR /app
 COPY --chown=ubuntu:ubuntu . .
+RUN chown ubuntu:ubuntu /app 
 USER ubuntu
 
 # Build the static library and program, run them, and generate the knowledge base at image build time,
