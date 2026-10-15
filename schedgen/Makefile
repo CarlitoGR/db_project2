@@ -20,7 +20,8 @@
 #   data/CTEC_Fall_2026_Schedule.xlsx --(scripts/xlsx_to_csv.py)--> data/class_schedule.csv
 #   build/schedgen + data/class_schedule.csv + data/faculty.csv --> output/*.csv, output/schedule.txt
 #   output/*.csv + scripts/export_docs.py --> output/Faculty_Schedules.docx / .xlsx
-#   output/*.csv + data/faculty.csv + prolog/rules.pl --(scripts/gen_prolog.py)--> output/knowledge_base.pl
+#   output/*.csv + data/faculty.csv + data/syllabi/*.pdf + prolog/rules.pl
+#                                            --(scripts/gen_prolog.py)--> output/knowledge_base.pl
 #   output/knowledge_base.pl --(scripts/ask.py: pyswip -> SWI-Prolog)--> answers
 # =================================================================================================
 
@@ -142,11 +143,13 @@ docs: $(DOCS_STAMP)
 # ---- Knowledge base: Python writes Prolog RULES + FACTS, Prolog answers questions ----------------
 KB        := $(OUT)/knowledge_base.pl
 RULES     := prolog/rules.pl
+SYLLABI   := $(sort $(wildcard data/syllabi/*.pdf))
 QUESTIONS := data/questions.txt
 QA_OUT    := $(OUT)/qa_demo.txt
 
-$(KB): $(SCHED_STAMP) $(FACULTY) $(RULES) scripts/gen_prolog.py
-	$(PYTHON) scripts/gen_prolog.py --input $(OUT) --faculty $(FACULTY) --rules $(RULES) -o $@
+$(KB): $(SCHED_STAMP) $(FACULTY) $(RULES) $(SYLLABI) scripts/gen_prolog.py scripts/syllabus.py
+	$(PYTHON) scripts/gen_prolog.py --input $(OUT) --faculty $(FACULTY) --rules $(RULES) -o $@ \
+	  --syllabi $(SYLLABI)
 
 kb: $(KB)
 
@@ -161,14 +164,15 @@ $(QA_OUT): $(KB) $(QUESTIONS) scripts/ask.py
 demo: $(QA_OUT)
 	@cat $(QA_OUT)
 
-# The tests use a knowledge base built from a small CS department (tests/data/cs_*.csv) by the whole
-# pipeline: C program -> gen_prolog.py -> Prolog. Then the Python unit tests and one end-to-end question.
+# The tests use a knowledge base built from a small CS department (tests/data/cs_*.csv) and the course
+# syllabi by the whole pipeline: C program -> gen_prolog.py -> Prolog. Then the Python unit tests and one
+# end-to-end question.
 KB_TEST := $(BUILD)/kb_test
 test-kb: $(BIN)
 	@rm -rf $(KB_TEST)
 	@./$(BIN) -q -o $(KB_TEST) tests/data/cs_class_schedule.csv tests/data/cs_faculty.csv
 	@$(PYTHON) scripts/gen_prolog.py --input $(KB_TEST) --faculty tests/data/cs_faculty.csv --rules $(RULES) \
-	   -o $(KB_TEST)/knowledge_base.pl
+	   -o $(KB_TEST)/knowledge_base.pl --syllabi $(SYLLABI)
 	$(SWIPL) -q -g "consult('$(KB_TEST)/knowledge_base.pl'), consult('tests/test_rules.pl')" -g "run_tests" -t halt
 	KB_TEST_KB=$(KB_TEST)/knowledge_base.pl $(PYTHON) -m unittest discover -s tests -p 'test_*.py'
 	@echo "--- end-to-end: 'What classes does Dr Tankeh teach?' ---"

@@ -8,7 +8,7 @@ generates each professor's **teaching schedule** and **office-hours schedule**. 
 the output. Python scripts export the department spreadsheet to CSV and turn the C output into Word and Excel
 documents.
 
-**Midterm addition:** the system answers questions about the schedule.
+**Midterm addition:** the system answers questions about the schedule and the course syllabi.
 
 ```
 $ make ask Q="What classes does Dr Tankeh teach?"
@@ -16,7 +16,7 @@ $ make ask Q="What classes does Dr Tankeh teach?"
 
 | Part | Role |
 |------|------|
-| `scripts/gen_prolog.py` | **Python reads** the schedule data and **generates the facts and rules** for Prolog: `output/knowledge_base.pl` |
+| `scripts/gen_prolog.py` | **Python reads** the schedule data and the **course syllabi** (PDF, via `scripts/syllabus.py`) and **generates the facts and rules** for Prolog: `output/knowledge_base.pl` |
 | `output/knowledge_base.pl` | **Prolog stores the knowledge**: part 1 rules (from `prolog/rules.pl`), part 2 facts |
 | `scripts/ask.py` | Recognises the question, builds the Prolog query, prints the answer |
 | SWI-Prolog via `pyswip` | **The interpreter**: `consult("knowledge_base.pl")`, then answers each query |
@@ -32,7 +32,7 @@ Internet input files, §11 Python and Prolog).
 |------|--------|----------|
 | GCC or Clang, GNU make, `ar` | gcc 13, clang 18, make 4.3 | Compiling, the static library, build automation |
 | Python 3 | 3.12 | All Python scripts |
-| `python-docx`, `openpyxl`, `pyswip` | see `requirements.txt` | Word/Excel output, the Python ↔ Prolog bridge |
+| `python-docx`, `openpyxl`, `pyswip`, `pypdf` | see `requirements.txt` | Word/Excel output, the Python ↔ Prolog bridge, reading the syllabus PDFs |
 | SWI-Prolog | 9.0 (8.4.2 or newer) | The Prolog interpreter |
 
 Runs on Linux, macOS or Windows (WSL). Python and SWI-Prolog must both be 64-bit.
@@ -55,7 +55,7 @@ Run from this directory. Each step builds whatever the previous one needs, so `m
 make            # 1. compile src/lib/*.c -> build/libschedule.a, compile main.c, link build/schedgen
 make run        # 2. run the C program on the two input files -> output/schedule.txt + CSV files
 make docs       # 3. Python: output -> output/Faculty_Schedules.docx and .xlsx
-make kb         # 4. Python: output -> Prolog knowledge base output/knowledge_base.pl
+make kb         # 4. Python: output + syllabi -> Prolog knowledge base output/knowledge_base.pl
 make ask Q="What is Dr Stone's schedule?"   # 5. ask a question (make ask alone = interactive)
 ```
 
@@ -68,7 +68,7 @@ To check everything:
 
 ```bash
 make test       # C: 104 unit checks on the library + end-to-end tests on broken input files
-make test-kb    # Prolog rule tests, Python tests, and the "Dr Tankeh" question end to end
+make test-kb    # 57 Prolog rule tests, 31 Python tests (incl. both syllabi), the "Dr Tankeh" question end to end
 make demo       # answers every question in data/questions.txt -> output/qa_demo.txt
 ```
 
@@ -94,6 +94,21 @@ Names, course codes, titles, days and rooms are looked up in the data; none is b
 | Availability | Is Dr Stone available on Monday at 3 PM? |
 | Workload, conflicts | How many sections does Carl Dixon teach? · Are there any conflicts? · List all lecturers |
 | Any Prolog query | `?- teaches_course(Id, 'CTEC 302').` |
+
+From the **course syllabi** (`data/syllabi/`):
+
+| Question type | Examples |
+|---------------|----------|
+| Course, instructor, contact | What is COSC 631 about? · Who teaches COSC 631? · How do I contact Dr Yang? |
+| Prerequisites | What are the prerequisites for COSC 528? · Can I take COSC 631 if I completed COSC 531? |
+| Grading | How is COSC 528 graded? · How much is the final worth in COSC 631? · What grade is 85 in COSC 631? |
+| Texts | What textbook does COSC 528 use? |
+| Weekly outline | What is the outline for COSC 631? · What is covered in week 6 of COSC 528? · When is quicksort covered? · When is the midterm in COSC 631? |
+| Dates, office hours | When is the last day to add/drop? · What are the office hours for COSC 631? · Which syllabi do you have? |
+
+Syllabus instructors also join the schedule questions: "Which office hours are on Thursday?" lists Dr. Bo Yang
+(Thu 3:00 – 5:00 PM, from the COSC 631 syllabus), and "What is Jim Gil de Lamadrid's schedule?" shows his
+office hours labelled with COSC 428/528.
 
 A misspelled name gets a suggestion ("Did you mean: Dr. D. B. Stone?"), and a name that is not in the data gets
 a clear "no lecturer named ..." answer.
@@ -131,7 +146,8 @@ OFFICE HOURS
 NOTE: Instructors are not to be interrupted during class times.
 ```
 
-More answers: `sample_output/qa_demo_cs.txt` (CS department) and `sample_output/qa_demo.txt` (CTEC schedule).
+More answers: `sample_output/qa_demo_cs.txt` (CS department) and `sample_output/qa_demo.txt` (CTEC schedule and
+the syllabi).
 
 ## 5. Input files
 
@@ -143,10 +159,17 @@ access and always produces the same output from the same files (report §8 expla
 | `data/CTEC_Fall_2026_Schedule.xlsx` | The department's class schedule, exactly as distributed |
 | `data/class_schedule.csv` | **Input 1**: CSV export of the workbook (`make csv` refreshes it when the `.xlsx` changes) |
 | `data/faculty.csv` | **Input 2**: one row per lecturer: name spellings, department, office, courses, office-hours policy, lecturer-supplied office hours |
+| `data/syllabi/*.pdf` | **Course syllabi** read by Python for the knowledge base: COSC 428/528 (Fall 2026) and COSC 631 (Spring 2022) |
 
 The schedule has 56 sections and 25 instructors in two 7-week sessions (7R1, 7R2). Office, email and phone are
 blank in `faculty.csv` because the department data does not include them; filling them in replaces "Office TBA".
 `make fetch SCHEDULE_URL=... FACULTY_URL=...` can download newer copies, but it is not used by default.
+
+**Syllabi.** The C program's two input files are unchanged. The syllabi feed the knowledge base only: they hold
+course facts (instructor, office hours, prerequisites, texts, grading, weekly outline, dates) but no meeting
+days, times or rooms, so there is nothing in them to schedule. To add a course, drop its syllabus PDF into
+`data/syllabi/` and run `make kb`. The reader finds fields by the labels syllabi commonly use ("Instructor",
+"Office Hours", "Prerequisite", "Outline", ...) in any order or layout; it needs a text PDF, not a scan.
 
 ## 6. Output (`output/`)
 
@@ -156,7 +179,7 @@ blank in `faculty.csv` because the department data does not include them; fillin
 | `classes.csv`, `office_hours.csv`, `faculty_summary.csv` | C | The schedule as data, read by the Python scripts |
 | `diagnostics.txt` | C | Every error, warning and note about the input data |
 | `Faculty_Schedules.docx`, `.xlsx` | Python | The schedules as Word and Excel documents |
-| `knowledge_base.pl` | Python | The Prolog knowledge base: rules + 602 facts |
+| `knowledge_base.pl` | Python | The Prolog knowledge base: rules + 759 facts (602 from the schedule, 157 from the syllabi) |
 | `qa_demo.txt` | Python + Prolog | Answers to `data/questions.txt` |
 
 A copy of every output from a reference run is in `sample_output/`.
@@ -171,7 +194,7 @@ A copy of every output from a reference run is in `sample_output/`.
 | `csv` | Export the `.xlsx` to `data/class_schedule.csv` (only if the workbook changed) |
 | `run` | Run the program on the two input files (only if the program or an input changed) |
 | `docs` | Word and Excel documents |
-| `kb` | Prolog knowledge base `output/knowledge_base.pl` |
+| `kb` | Prolog knowledge base `output/knowledge_base.pl` (schedule + syllabi) |
 | `ask` | Answer `Q="..."`, or interactive without `Q` |
 | `demo` | Answer every question in `data/questions.txt` |
 | `test`, `test-kb` | C tests; Prolog + Python tests and the end-to-end question |
@@ -197,8 +220,8 @@ schedgen/
 ├── include/         8 headers (schedule.h includes the rest)
 ├── src/main.c       command-line driver, the only C file outside the library
 ├── src/lib/         common.c csv.c diag.c loader.c report.c scheduler.c timeutil.c  -> build/libschedule.a
-├── data/            the two input files (+ the source .xlsx) and questions.txt
-├── scripts/         xlsx_to_csv.py  export_docs.py  gen_prolog.py  ask.py
+├── data/            the two input files (+ the source .xlsx), syllabi/ (course syllabus PDFs), questions.txt
+├── scripts/         xlsx_to_csv.py  export_docs.py  gen_prolog.py  syllabus.py  ask.py
 ├── prolog/          rules.pl: the Prolog rules included in the knowledge base
 ├── tests/           C unit tests, Prolog tests (test_rules.pl), Python tests (test_kb.py), test input files
 ├── sample_output/   every output file from a reference run

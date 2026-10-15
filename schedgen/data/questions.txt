@@ -15,3 +15,22 @@ Who teaches on Saturday?
 Are there any conflicts?
 What classes does Dr Tankeh teach?
 ?- lecturer_of('CTEC 410', Name).
+# From the course syllabi in data/syllabi/
+Which syllabi do you have?
+Who teaches COSC 631?
+What is COSC 631 about?
+What are the prerequisites for COSC 528?
+Can I take COSC 631 if I completed COSC 531?
+How is COSC 528 graded?
+How much is the final worth in COSC 631?
+What grade is 85 in COSC 631?
+What textbook does COSC 528 use?
+What is covered in week 6 of COSC 528?
+When is quicksort covered?
+When is the midterm in COSC 631?
+What is the outline for COSC 631?
+What are the office hours for COSC 631?
+What is Jim Gil de Lamadrid's schedule?
+How do I contact Dr Yang?
+When is the last day to add/drop?
+Which office hours are on Thursday?

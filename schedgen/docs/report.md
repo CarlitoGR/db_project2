@@ -48,10 +48,11 @@ describes this part.
 | Explain Internet vs. local input files | §8 |
 | Submit source, headers, library, Makefile, inputs, Python, sample output, README | Appendix A |
 | **Midterm:** answer questions such as "What classes does Dr Tankeh teach?" | `scripts/ask.py` + Prolog; `make ask Q="..."` (§11) |
-| **Midterm:** Python reads the schedule data and generates facts and rules for Prolog | `scripts/gen_prolog.py` → `output/knowledge_base.pl` (§11.2–11.4) |
-| **Midterm:** Prolog stores knowledge as facts and rules | `output/knowledge_base.pl`: part 1 rules, part 2 facts (§11.3–11.4) |
-| **Midterm:** output in the style of the sample | "What is Dr Tankeh's schedule?" prints CLASS SCHEDULE / OFFICE HOURS / NOTE in the sample's layout (§11.7) |
-| **Midterm:** Prolog acts as the interpreter that answers questions | `pyswip` consults both files and runs each query in SWI-Prolog (§11.5) |
+| **Midterm:** Python reads the syllabuses and the class schedule and generates facts and rules for Prolog | `scripts/syllabus.py` reads the syllabus PDFs, `scripts/gen_prolog.py` writes `output/knowledge_base.pl` (§11.2–11.5) |
+| **Midterm:** two documents that provide facts and rules for the CS courses | `data/syllabi/`: the COSC 428/528 (Fall 2026) and COSC 631 (Spring 2022) syllabi (§11.5) |
+| **Midterm:** Prolog stores knowledge as facts and rules | `output/knowledge_base.pl`: part 1 rules, part 2 facts (§11.3–11.5) |
+| **Midterm:** output in the style of the sample | "What is Dr Tankeh's schedule?" prints CLASS SCHEDULE / OFFICE HOURS / NOTE in the sample's layout (§11.8) |
+| **Midterm:** Prolog acts as the interpreter that answers questions | `pyswip` consults `knowledge_base.pl` and runs each query in SWI-Prolog (§11.6) |
 
 # 2. System design
 
@@ -402,8 +403,8 @@ everything downstream automatically.
 | Valgrind `--leak-check=full` on the CTEC data | No leaks, no errors |
 | GCC `-Wall -Wextra -Wpedantic -Wshadow -Wformat=2`; Clang with `-Wconversion` | Zero warnings |
 | Ruff (Python, 120-character lines) | Clean |
-| `make test-kb`: 35 Prolog rule tests (plunit): time formatting and overlap, name matching, who-teaches-what, office-hours labelling, availability, policy, and conflict rules (injected clashes must be found; 7R1 vs 7R2 must not clash) | All pass |
-| `make test-kb`: 22 Python tests: fact-generator helpers (atom escaping, times, days, rooms, name tokens) and question answering in six phrasings of "What classes does Dr Tankeh teach?" plus the full schedule in the sample's layout, office hours, rooms, availability, misspelled names and raw queries | All pass |
+| `make test-kb`: 57 Prolog rule tests (plunit): time formatting and overlap, name matching, who-teaches-what, office-hours labelling, availability, policy, and conflict rules (injected clashes must be found; 7R1 vs 7R2 must not clash); and the syllabus rules: prerequisites (direct, chained, undergraduate-only), can-take, letter grades, weights totalling 100, topic search, course level, syllabus office hours | All pass |
+| `make test-kb`: 31 Python tests: fact-generator helpers (atom escaping, times, days, rooms, name tokens); the syllabus reader on both PDFs (every field) and on stacked vs inline labels and office-hours formats; and question answering in six phrasings of "What classes does Dr Tankeh teach?" plus the full schedule in the sample's layout, office hours, rooms, availability, misspelled names, raw queries and eleven syllabus questions | All pass |
 | End-to-end: CS input files → C program → `gen_prolog.py` → Prolog; the answer to "What classes does Dr Tankeh teach?" must list COSC 330, 369 and 631 | Pass |
 | Cross-check: the Prolog conflict rules find exactly the same 3 conflicts in the CTEC data as the C program | Pass |
 
@@ -474,7 +475,8 @@ No answer is computed in Python. Python only translates: data → facts, and que
 ## 11.2 Pipeline
 
 ```
- class_schedule.csv ─┐                        ┌─► classes.csv ──────┐
+ syllabi/*.pdf ──── syllabus.py ────────────────────────────────────┐
+ class_schedule.csv ─┐                        ┌─► classes.csv ──────┤
                      ├─► schedgen (C) ────────┼─► office_hours.csv ─┼─► gen_prolog.py ──► knowledge_base.pl
  faculty.csv ────────┘                        └─► faculty_summary   │        ▲            (rules + facts)
           └──────────────────── aliases, required hours ────────────┘   prolog/rules.pl          │
@@ -484,7 +486,8 @@ No answer is computed in Python. Python only translates: data → facts, and que
                                             └──────────── {S: 'COSC 330.001', ...} ◄──────────────┘
 ```
 
-**Why Python reads the C program's output rather than the raw input files.** The C program already resolves the
+**The syllabi Python reads directly; the class schedule it reads through the C program.** The syllabus PDFs
+have no other reader, so `syllabus.py` parses them itself (§11.5). For the class schedule, the C program already resolves the
 three spellings of an instructor's name, repairs "3:15 AM" to "3:15 PM", classifies asynchronous and TBA
 sections and generates the office hours. Re-implementing that in Python would create a second set of rules that
 could disagree with the first. Reading the normalised CSV keeps one source of truth, and the knowledge base
@@ -517,7 +520,8 @@ the data: the same rules serve the CTEC schedule and the CS department, and they
 | `office_hours_required(Id, Minutes)` | Weekly requirement applied | `office_hours_required('CS01', 660)` |
 | `data_issue(Severity, Message)` | A problem the C program reported | `data_issue(error, 'Room 112 is double-booked: ...')` |
 
-The CTEC schedule produces 602 facts. The file is regenerated by `make` whenever the C output or the faculty
+The CTEC schedule produces 602 facts; the two syllabi add 157 (§11.5), 759 in all. The file is regenerated by
+`make` whenever the C output or the faculty
 file changes, and contains no timestamp, so the same input always gives a byte-identical knowledge base.
 
 ## 11.4 Rules: how the facts relate
@@ -567,7 +571,113 @@ On the CTEC data these rules find exactly the three conflicts the C program repo
 Ruth Agada). Two independent implementations agreeing is strong evidence that both are correct and that the
 facts are a faithful copy of the schedule.
 
-## 11.5 How a question is answered
+## 11.5 The course syllabi
+
+The assignment names two documents that provide facts and rules for the courses in CS. They are the two course
+syllabi in `data/syllabi/`: **COSC 428/528 Design and Analysis of Algorithms** (Fall 2026, Jim Gil de Lamadrid)
+and **COSC 631 Database Information Systems II** (Spring 2022, Dr. Bo Yang). Python reads them directly from the
+PDF files (`scripts/syllabus.py`, using the pure-Python `pypdf`, so no extra system tools are needed) and
+`gen_prolog.py` adds what it finds to the knowledge base.
+
+The syllabi do not replace the C program's two input files: they contain no meeting days, times or rooms, so
+there is nothing in them to schedule. They add the course knowledge a student asks about.
+
+**Reading a syllabus.** The two documents share no layout. One puts each label on its own line
+(`Instructor :` followed by the name below), the other writes it inline (`INSTRUCTOR: Dr. Bo Yang`); one writes
+office hours as `MW 2:00-3:00p`, the other as `Thu 3:00PM-5:00PM`; one gives the grade scale as `A 100%-90%`, the
+other as `90 - 100 = A`; one numbers weeks `Week #2  Hmwk. #1  Order of Growth,` with the topic wrapped onto the
+next lines, the other `Week 2: 2/2  Query Processing and Optimization, Project#1`. The reader therefore works from
+the **section labels** syllabi commonly use (Instructor, Office Hours, Prerequisite, Text, References,
+Description, Requirements / Evaluation Method, Grading, Outline / Tentative Time Schedule, Important Dates), in
+any case and order, and gives each field its own extractor:
+
+| Field | How it is read |
+|---|---|
+| Course codes, title, credits, term | Lines above the first label: every `COSC 528`-style code (cross-listed codes are kept together), "3 Credits", "Fall 2026" |
+| Instructor, office, email, phone | The Instructor block, or separate Office Location / Email / Phone labels |
+| Office hours | `days start-end` per line: `MW`, `TR`, `Thu`, `Mon/Wed`; `2:00-3:00p` takes PM from the end time, and `11:00-1:00p` starts in the morning. Other lines ("Other time by appointment") are kept as notes |
+| Prerequisites | Course codes in the block; "undergraduate:" applies only to the codes numbered below 500 (COSC 428, not 528) |
+| Grading | Lines ending in a percentage under Requirements / Evaluation Method; the letter scale in either form |
+| Weekly outline | `Week N` lines with an optional date; wrapped topic lines are joined; `pp.19-42` becomes a reading |
+
+Anything not found is left out rather than guessed, and `gen_prolog.py` prints one line per syllabus saying what
+it extracted, so a syllabus with an unusual layout is noticed at once.
+
+**Facts from the syllabi** (157 for the two documents):
+
+| Fact | Example |
+|---|---|
+| `syllabus_course(Code, Title, Credits, Term, File)` | `syllabus_course('COSC 631', 'Database Information Systems II', 3, 'Spring 2022', ...)` |
+| `syllabus_teaches(Id, Code, Term)` | `syllabus_teaches('SY02', 'COSC 631', 'Spring 2022')` |
+| `cross_listed(Code, Other)` | `cross_listed('COSC 528', 'COSC 428')` |
+| `prerequisite(Code, Pre)` | `prerequisite('COSC 428', 'COSC 214')` |
+| `grade_component(Code, Name, Pct)`, `grade_scale(Code, Letter, Min, Max)` | `grade_component('COSC 631', 'Final', 30)`, `grade_scale('COSC 631', 'B', 80, 89)` |
+| `week_topic(Code, Week, Date, Topic)`, `week_reading(Code, Week, Pages)` | `week_topic('COSC 631', 8, '3/16', 'Tentative Midterm')` |
+| `textbook/2`, `reference/2`, `description/2`, `important_date/3`, `office_hours_note/2` | `important_date('COSC 528', 'Last Day to Add/Drop a Class', '09/04/26')` |
+
+A syllabus's instructor who is not in the faculty file becomes a lecturer (`SY01`, `SY02`, ...) with ordinary
+`faculty/6`, `name_token/2` and `office_hours/6` facts. Every existing question therefore covers them without
+change: "Which office hours are on Thursday?" lists Dr. Bo Yang next to the CTEC faculty, and "Who teaches COSC
+631?" in the CS department answers both Dr. Tankeh (the class schedule) and Dr. Bo Yang (the Spring 2022
+syllabus).
+
+**Rules over the syllabi** (in `prolog/rules.pl`):
+
+```prolog
+requires(Code, Pre) :- prerequisite(Code, Pre).                       % direct
+requires(Code, Pre) :- prerequisite(Code, Mid), requires(Mid, Pre).   % and transitive
+
+can_take(Code, Completed) :-
+    course(Code, _, _),
+    \+ missing_prerequisite(Code, Completed, _).
+
+letter_grade(Code, Score, Letter) :-          % "80 - 89 = B" covers 80 up to 89.99...
+    grade_scale(Code, Letter, Min, Max), Score >= Min, Score < Max + 1, !.
+
+course_level(Code, Level) :-                  % 100-499 undergraduate, 500 and above graduate
+    sub_atom(Code, _, 3, 0, Digits), atom_number(Digits, N),
+    ( N >= 500 -> Level = graduate ; Level = undergraduate ).
+```
+
+with `grade_total/2` (the weights must add up to 100), `heaviest_component/3`, `component_weight/4`,
+`topic_week/5` (case-insensitive topic search) and `syllabus_instructor/2`. Office hours published on a syllabus
+are labelled with that syllabus's course by a second clause of `office_hours_course/4`.
+
+Sample answers (`sample_output/qa_demo.txt`):
+
+```
+Q: Can I take COSC 631 if I completed COSC 531?
+Yes: COSC 631 - it requires COSC 531, which you have.
+
+Q: How is COSC 528 graded?
+COSC 428 / COSC 528 (Design and Analysis of Algorithms), Fall 2026 syllabus
+  Component                 Weight
+  Group project             10%
+  Homeworks (6)             40%
+  Tests (2, noncumulative)  50%
+  Total                     100%
+  Letter grades: A 90-100 · B 80-89 · C 70-79 · D 60-69 · F 0-59
+
+Q: When is quicksort covered?
+COSC 428 / COSC 528 (Design and Analysis of Algorithms): week 6: Hmwk. #3 · Quicksort, Polyphase Merge Sort
+
+Q: What is Jim Gil de Lamadrid's schedule?
+Jim Gil de Lamadrid (SY01) | Computer Science (COSC) | Office: CSB 222
+
+COURSE SYLLABI (meeting times are not given on the syllabus)
+  Course                                                   Term       Prerequisite
+  COSC 428 / COSC 528 (Design and Analysis of Algorithms)  Fall 2026  COSC 214 (COSC 428 only)
+
+OFFICE HOURS
+  Monday:    2:00 – 3:00 PM (COSC 428, COSC 528)
+  Tuesday:   2:30 – 4:30 PM (COSC 428, COSC 528)
+  Wednesday: 2:00 – 3:00 PM (COSC 428, COSC 528)
+  Thursday:  2:30 – 4:30 PM (COSC 428, COSC 528)
+  Friday:
+NOTE: Instructors are not to be interrupted during class times.
+```
+
+## 11.6 How a question is answered
 
 Take *"What classes does Dr Tankeh teach?"*:
 
@@ -594,7 +704,9 @@ for row in prolog.query("lecturer_named([tankeh], Id), teaches(Id, Section)"):
     print(row["Section"])               # COSC 330.001, COSC 369.001, COSC 631.001
 ```
 
-Questions it understands include: a lecturer's full schedule (classes and office hours, in the sample's
+Questions it understands include, from the syllabi: a course's description, instructor and contact details,
+prerequisites and whether a student can take it, grading weights and letter grades, textbooks, the weekly
+outline, when a topic or test comes up, and important dates; and from the schedule: a lecturer's full schedule (classes and office hours, in the sample's
 layout); what classes a lecturer teaches (optionally on one day); who teaches a course,
 by code or by title words; a lecturer's office hours; which office hours or classes fall on a day; which classes
 are in a room; where and when a course meets; whether a lecturer is available at a given time; how many sections
@@ -602,12 +714,12 @@ a lecturer teaches; conflicts and data issues; and the list of lecturers. Any Pr
 directly, e.g. `?- lecturer_of('CTEC 350', Name).` A misspelled name gets a suggestion ("Did you mean:
 Dr. D. B. Stone?"), and a name that is not in the data gets a clear answer instead of an empty list.
 
-## 11.6 Running it
+## 11.7 Running it
 
 ```bash
 sudo apt-get install swi-prolog-nox          # SWI-Prolog 8.4.2+ (Windows/macOS: swi-prolog.org installer)
-python3 -m pip install -r requirements.txt   # python-docx, openpyxl, pyswip
-make kb                                      # C program (if needed) -> output/knowledge_base.pl
+python3 -m pip install -r requirements.txt   # python-docx, openpyxl, pyswip, pypdf
+make kb                                      # C program (if needed) + syllabi -> output/knowledge_base.pl
 make ask Q="What classes does Dr Tankeh teach?"
 make ask                                     # interactive: type questions, 'quit' to leave
 make demo                                    # data/questions.txt -> output/qa_demo.txt
@@ -622,7 +734,7 @@ directory printed by `swipl --dump-runtime-variables | grep PLBASE`.
 program's output, the faculty file, the rule library and `gen_prolog.py`, so editing either input file and running `make ask` re-runs the C
 program, regenerates the facts, and answers from the new data.
 
-## 11.7 Sample session
+## 11.8 Sample session
 
 The CTEC Fall 2026 schedule does not include Dr Tankeh, so the system answers that question honestly:
 
@@ -690,7 +802,7 @@ Q: Are there any conflicts?
   Ruth Agada is double-booked: CTEC 402.180 [7R2] ... vs CTEC 435.180 [7R2] ...
 ```
 
-## 11.8 Design decisions
+## 11.9 Design decisions
 
 * **Facts are generated, rules are written.** Facts change every term; rules change only when the questions
   do. Keeping them in separate files means new data never touches the logic.
@@ -714,6 +826,8 @@ Q: Are there any conflicts?
 * The question front end recognises a fixed set of sentence patterns (about 20). A question phrased in an
   unexpected way gets a list of examples rather than an answer; a natural-language parser (or an LLM that emits
   the Prolog query) would widen coverage while keeping Prolog as the source of truth.
+* The syllabus reader finds fields by common section labels. A syllabus that uses unusual labels yields fewer
+  facts (gen_prolog.py reports what it extracted), and a scanned PDF needs OCR first.
 * Availability answers use the weekly pattern and do not yet distinguish the 7R1 and 7R2 halves of the term.
 
 # Appendix A – Submission contents
@@ -729,7 +843,9 @@ Q: Are there any conflicts?
 | `data/class_schedule.csv` | Input file 1 (CSV export of the workbook) |
 | `data/faculty.csv` | Input file 2 |
 | `scripts/xlsx_to_csv.py`, `scripts/export_docs.py`, `requirements.txt` | Python steps |
-| `scripts/gen_prolog.py` | Midterm: schedule data → Prolog facts |
+| `scripts/gen_prolog.py` | Midterm: schedule data + syllabi → Prolog knowledge base |
+| `scripts/syllabus.py` | Midterm: reads a course syllabus PDF |
+| `data/syllabi/*.pdf` | Midterm: the two CS course syllabi (COSC 428/528, COSC 631) |
 | `scripts/ask.py` | Midterm: question front end (pyswip → SWI-Prolog) |
 | `prolog/rules.pl` | Midterm: Prolog rule library (part 1 of the generated knowledge base) |
 | `data/questions.txt` | Midterm: questions answered by `make demo` |

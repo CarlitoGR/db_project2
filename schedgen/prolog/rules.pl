@@ -16,6 +16,10 @@
 % cleanly instead of raising an "unknown procedure" error.
 :- dynamic faculty/6, alias/2, name_token/2, course/3, section/5, listed_instructor/2, teaches/2,
            meets/4, room_listed/2, room/2, office_hours/6, office_hours_required/2, data_issue/2.
+% Facts read from the course syllabi.
+:- dynamic syllabus_course/5, syllabus_teaches/3, cross_listed/2, prerequisite/2, textbook/2, reference/2,
+           description/2, grade_component/3, grade_scale/4, week_topic/4, week_reading/3, important_date/3,
+           syllabus_office_hours_course/4, office_hours_note/2.
 
 % ---- Calendar ------------------------------------------------------------------------------------
 
@@ -75,10 +79,13 @@ section_of_course(Section, Code) :-
 
 % ---- Who teaches what ----------------------------------------------------------------------------
 
-% teaches_course(?Id, ?Code): the lecturer teaches at least one section of the course.
+% teaches_course(?Id, ?Code): the lecturer teaches a section of the course (class schedule) or is the
+% instructor named on its syllabus.
 teaches_course(Id, Code) :-
     teaches(Id, Section),
     section(Section, Code, _, _, _).
+teaches_course(Id, Code) :-
+    syllabus_teaches(Id, Code, _).
 
 % lecturer_of(?Code, ?Name): "Who teaches CTEC 350?" Each lecturer once, however many sections.
 lecturer_of(Code, Name) :-
@@ -177,6 +184,9 @@ office_hours_course(Id, Day, Start, Code) :-
             Pairs),
     msort(Pairs, [Best-_|_]),
     member(Best-Code, Pairs).
+% Office hours published on a syllabus belong to that syllabus's course(s).
+office_hours_course(Id, Day, Start, Code) :-
+    syllabus_office_hours_course(Id, Day, Start, Code).
 
 % in_office(?Id, ?Day, +Time): the lecturer is holding office hours at that time.
 in_office(Id, Day, Time) :-
@@ -257,3 +267,64 @@ meets_office_hours_policy(Id) :-
     office_hours_required(Id, Need),
     office_hours_minutes(Id, Have),
     Have >= Need.
+
+% ---- Course syllabi --------------------------------------------------------------------------------
+% Facts read from the syllabus PDFs: prerequisite/2, grade_component/3, grade_scale/4, week_topic/4, ...
+
+% course_level(+Code, -Level): 100-499 are undergraduate courses, 500 and above graduate courses.
+course_level(Code, Level) :-
+    sub_atom(Code, _, 3, 0, Digits),
+    atom_number(Digits, Number),
+    ( Number >= 500 -> Level = graduate ; Level = undergraduate ).
+
+% requires(?Code, ?Prerequisite): a direct prerequisite, or a prerequisite of a prerequisite.
+requires(Code, Pre) :-
+    prerequisite(Code, Pre).
+requires(Code, Pre) :-
+    prerequisite(Code, Mid),
+    requires(Mid, Pre).
+
+% missing_prerequisite(+Code, +Completed, -Pre): a direct prerequisite not in the list of completed courses.
+missing_prerequisite(Code, Completed, Pre) :-
+    prerequisite(Code, Pre),
+    \+ memberchk(Pre, Completed).
+
+% can_take(+Code, +Completed): every direct prerequisite of the course has been completed.
+can_take(Code, Completed) :-
+    course(Code, _, _),
+    \+ missing_prerequisite(Code, Completed, _).
+
+% letter_grade(+Code, +Score, -Letter): the syllabus's grade scale ("80 - 89 = B" covers 80 up to 89.99...).
+letter_grade(Code, Score, Letter) :-
+    grade_scale(Code, Letter, Min, Max),
+    Score >= Min,
+    Score < Max + 1,
+    !.
+
+% grade_total(+Code, -Percent): the grade components should add up to 100.
+grade_total(Code, Total) :-
+    syllabus_course(Code, _, _, _, _),
+    aggregate_all(sum(P), grade_component(Code, _, P), Total).
+
+% heaviest_component(+Code, -Name, -Percent): the component that counts most toward the grade.
+heaviest_component(Code, Name, Percent) :-
+    aggregate_all(max(P, N), grade_component(Code, N, P), max(Percent, Name)).
+
+% component_weight(+Code, +Fragment, -Name, -Percent): "How much is the midterm worth in COSC 631?"
+component_weight(Code, Fragment, Name, Percent) :-
+    grade_component(Code, Name, Percent),
+    downcase_atom(Name, Lower),
+    downcase_atom(Fragment, Needle),
+    sub_atom(Lower, _, _, _, Needle).
+
+% topic_week(?Code, +Fragment, -Week, -Date, -Topic): "When is quicksort covered?" (case-insensitive).
+topic_week(Code, Fragment, Week, Date, Topic) :-
+    week_topic(Code, Week, Date, Topic),
+    downcase_atom(Topic, Lower),
+    downcase_atom(Fragment, Needle),
+    sub_atom(Lower, _, _, _, Needle).
+
+% syllabus_instructor(?Code, ?Name): the instructor named on the course's syllabus.
+syllabus_instructor(Code, Name) :-
+    syllabus_teaches(Id, Code, _),
+    lecturer(Id, Name).

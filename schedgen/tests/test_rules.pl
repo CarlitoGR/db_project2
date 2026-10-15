@@ -109,3 +109,45 @@ test(different_terms_no_clash, [setup((add_clash('7R2'), user:retract(section('C
     room_conflict(_, 'COSC 631.001', 'TEST 999.001').
 
 :- end_tests(conflicts).
+
+% ---- Rules over the course syllabi (data/syllabi/*.pdf, read by syllabus.py) ------------------------
+%   COSC 428 / COSC 528 Design and Analysis of Algorithms, Fall 2026, Jim Gil de Lamadrid (MW 2-3, TR 2:30-4:30)
+%   COSC 631 Database Information Systems II, Spring 2022, Dr. Bo Yang (Thu 3-5), prerequisite COSC 531
+
+:- begin_tests(syllabi).
+
+test(syllabus_instructor, [nondet, true(N == 'Dr. Bo Yang')]) :- syllabus_instructor('COSC 631', N).
+test(teaches_course_from_syllabus, [nondet]) :- lecturer_named([yang], Id), teaches_course(Id, 'COSC 631').
+% COSC 631 is in the CS schedule (Dr. Tankeh) and on the Spring 2022 syllabus (Dr. Bo Yang): both teach it.
+test(two_instructors_for_631, [true(Names == ['Dr. Bo Yang', 'Dr. Tankeh'])]) :-
+    setof(N, lecturer_of('COSC 631', N), Names).
+test(cross_listed) :- cross_listed('COSC 528', 'COSC 428').
+
+test(level_graduate) :- course_level('COSC 528', graduate).
+test(level_undergraduate) :- course_level('COSC 428', undergraduate).
+
+% "undergraduate: COSC 214" applies to the undergraduate code only.
+test(prerequisite_undergraduate_only, [fail]) :- prerequisite('COSC 528', _).
+test(requires_direct, [nondet]) :- requires('COSC 631', 'COSC 531').
+test(can_take) :- can_take('COSC 631', ['COSC 531']).
+test(cannot_take, [fail]) :- can_take('COSC 631', []).
+test(missing, [true(P == 'COSC 214')]) :- missing_prerequisite('COSC 428', ['COSC 101'], P).
+
+test(letter_b) :- letter_grade('COSC 631', 85, 'B').
+test(letter_between_bands) :- letter_grade('COSC 631', 89.5, 'B').
+test(letter_f) :- letter_grade('COSC 528', 12, 'F').
+test(weights_total_100, [true(T =:= 100)]) :- grade_total('COSC 631', T).
+test(heaviest, [true(N-P == 'Final'-30)]) :- heaviest_component('COSC 631', N, P).
+test(component_weight, [nondet, true(P == 20)]) :- component_weight('COSC 631', midterm, _, P).
+
+test(topic_search, [nondet, true(W == 6)]) :- topic_week('COSC 528', quicksort, W, _, _).
+test(topic_date, [nondet, true(D == '3/16')]) :- topic_week('COSC 631', midterm, _, D, _).
+test(reading, [nondet]) :- week_reading('COSC 528', 6, 'pp.113-130').
+
+% Syllabus office hours join the same office_hours/6 facts, labelled with the syllabus's course.
+test(syllabus_office_hours, [nondet]) :-
+    lecturer_named([yang], Id), office_hours_on(thursday, Id, 900, 1020, _).
+test(syllabus_office_hours_course, [nondet]) :-
+    lecturer_named([lamadrid], Id), office_hours_course(Id, monday, 840, 'COSC 528').
+
+:- end_tests(syllabi).

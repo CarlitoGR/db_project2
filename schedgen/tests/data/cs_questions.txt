@@ -11,3 +11,6 @@ Is Dr Tankeh free on Monday at 10 AM?
 What does Jordan Ellis teach on Tuesday?
 Are there any conflicts?
 ?- classes_of_lecturer([tankeh], Section, Code, Title).
+# The CS department and the COSC 631 syllabus (Spring 2022) both have a COSC 631: two terms, two instructors.
+Who teaches COSC 631?
+What are the prerequisites for COSC 631?

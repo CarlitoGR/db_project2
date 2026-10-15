@@ -19,7 +19,9 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import ask  # scripts/ is not a package, so it is put on sys.path above
 import gen_prolog
+import syllabus
 
+SYLLABI = ROOT / "data" / "syllabi"
 KB = Path(os.environ.get("KB_TEST_KB", ROOT / "build" / "kb_test" / "knowledge_base.pl"))
 
 
@@ -49,6 +51,82 @@ class GenPrologTests(unittest.TestCase):
     def test_name_tokens_drop_titles_and_initials(self) -> None:
         self.assertEqual(gen_prolog.name_tokens("Dr. Stone, D. B."), {"stone"})
         self.assertEqual(gen_prolog.name_tokens("Tankeh, Dr.", "Dr. Tankeh"), {"tankeh"})
+
+
+class SyllabusHelperTests(unittest.TestCase):
+    def test_parse_days(self) -> None:
+        self.assertEqual(syllabus.parse_days("MW"), ["monday", "wednesday"])
+        self.assertEqual(syllabus.parse_days("TR"), ["tuesday", "thursday"])
+        self.assertEqual(syllabus.parse_days("Thu"), ["thursday"])
+        self.assertEqual(syllabus.parse_days("Mon/Wed"), ["monday", "wednesday"])
+        self.assertEqual(syllabus.parse_days("Other"), [])
+
+    def test_office_hours_lines(self) -> None:
+        syl = syllabus.Syllabus(source=Path("x.pdf"))
+        lines = ["MW 2:00-3:00p", "Thu 3:00PM-5:00PM", "F 11:00-1:00p", "Other time by appointment"]
+        syllabus.read_office_hours(syl, {"office_hours": lines})
+        got = [(b.days, b.start, b.end) for b in syl.office_hours]
+        self.assertEqual(
+            got,
+            [(["monday", "wednesday"], 840, 900), (["thursday"], 900, 1020), (["friday"], 660, 780)],
+        )
+        self.assertEqual(syl.office_hours_notes, ["Other time by appointment"])
+
+    def test_sections_inline_and_stacked_labels(self) -> None:
+        header, sections = syllabus.split_sections(
+            ["COSC 631 Databases (3 Credits)", "INSTRUCTOR:   Dr. A. B", "Office Hours  :", "   MW 1:00-2:00p"]
+        )
+        self.assertEqual(header, ["COSC 631 Databases (3 Credits)"])
+        self.assertEqual(sections["instructor"], ["Dr. A. B"])
+        self.assertEqual(sections["office_hours"], ["   MW 1:00-2:00p"])
+
+    def test_tidy(self) -> None:
+        self.assertEqual(syllabus.tidy("Systems ,  Elmasri;  7 th  ed."), "Systems, Elmasri; 7th ed.")
+
+
+def pypdf_available() -> bool:
+    try:
+        import pypdf  # noqa: F401
+    except ImportError:
+        return False
+    return True
+
+
+@unittest.skipUnless(pypdf_available(), "needs pypdf")
+class SyllabusPdfTests(unittest.TestCase):
+    """The two syllabus PDFs in data/syllabi are read correctly despite very different layouts."""
+
+    def test_cosc_528(self) -> None:
+        syl = syllabus.read_syllabus(SYLLABI / "COSC_528_Syllabus_Fall_2026.pdf")
+        self.assertEqual(syl.codes, ["COSC 428", "COSC 528"])
+        self.assertEqual((syl.title, syl.credits, syl.term), ("Design and Analysis of Algorithms", 3, "Fall 2026"))
+        self.assertEqual((syl.instructor, syl.office), ("Jim Gil de Lamadrid", "CSB 222"))
+        self.assertEqual(syl.email, "jgildelamadrid@bowiestate.edu")
+        self.assertEqual([(b.days, b.start, b.end) for b in syl.office_hours][1], (["tuesday", "thursday"], 870, 990))
+        self.assertEqual(syl.prerequisites, {"COSC 428": ["COSC 214"]})
+        self.assertEqual(sum(p for _, p in syl.weights), 100)
+        self.assertEqual(len(syl.weeks), 15)
+        self.assertEqual(syl.weeks[1][2], "Hmwk. #1 · Order of Growth, Recurrence Relations, Divide-and-Conquer")
+        self.assertEqual(syl.weeks[10][3], ["pp.267-288", "pp.297-302"])
+        self.assertEqual(syl.dates[0], ("Last Day to Add/Drop a Class", "09/04/26"))
+        self.assertEqual(len(syl.references), 3)
+
+    def test_cosc_631(self) -> None:
+        syl = syllabus.read_syllabus(SYLLABI / "COSC_631_Syllabus_Spring_2022.pdf")
+        self.assertEqual(syl.codes, ["COSC 631"])
+        self.assertEqual(
+            (syl.title, syl.term, syl.department),
+            ("Database Information Systems II", "Spring 2022", "Computer Science"),
+        )
+        self.assertEqual(syl.instructor, "Dr. Bo Yang")
+        self.assertEqual(syl.office, "Computer Science Building, Room 322")
+        self.assertEqual(syl.phones, ["2-4459 (in campus)", "301-860-4459 (off campus)"])
+        self.assertEqual(syl.office_hours_notes, ["Other time by appointment"])
+        self.assertEqual(syl.prerequisites, {"COSC 631": ["COSC 531"]})
+        self.assertEqual(dict(syl.weights)["Final"], 30)
+        self.assertEqual(syl.scale[-1], ("F", 0, 59))
+        self.assertEqual(syl.weeks[7][:3], (8, "3/16", "Tentative Midterm"))
+        self.assertTrue(syl.texts[0].startswith("Fundamentals of Database Systems, Elmasri/Navathe; 7th"))
 
 
 class ParserTests(unittest.TestCase):
@@ -171,6 +249,31 @@ class AnswerTests(unittest.TestCase):
 
     def test_no_conflicts(self) -> None:
         self.assertEqual(self.ask("Are there any conflicts?"), "No scheduling conflicts found.")
+
+    def test_syllabus_questions(self) -> None:
+        self.assertEqual(self.ask("What are the prerequisites for COSC 631?"), "COSC 631 (graduate) requires COSC 531.")
+        self.assertTrue(self.ask("Can I take COSC 631 if I completed COSC 531?").startswith("Yes"))
+        self.assertTrue(self.ask("Can I take COSC 428?").startswith("Not yet: COSC 428 requires COSC 214"))
+        self.assertTrue(self.ask("What grade is 85 in COSC 631?").startswith("85 is a B in COSC 631"))
+        self.assertIn("is worth 30%", self.ask("How much is the final worth in COSC 631?"))
+        self.assertIn("Total                     100%", self.ask("How is COSC 528 graded?"))
+        self.assertIn("week 6: Hmwk. #3 · Quicksort", self.ask("When is quicksort covered?"))
+        self.assertIn("week 8 (3/16): Tentative Midterm", self.ask("When is the midterm in COSC 631?"))
+        self.assertIn("McConnell", self.ask("What textbook does COSC 528 use?"))
+        self.assertIn("09/04/26", self.ask("When is the last day to add/drop?"))
+        self.assertIn("byang@bowiestate.edu", self.ask("How do I contact Dr Yang?"))
+
+    def test_syllabus_instructor_in_schedule_questions(self) -> None:
+        answer = self.ask("Who teaches COSC 631?")
+        self.assertIn("Dr. Tankeh (CS01): COSC 631.001", answer)
+        self.assertIn("Dr. Bo Yang", answer)
+        self.assertIn("course syllabus, Spring 2022", answer)
+        self.assertIn("Dr. Bo Yang", self.ask("Which office hours are on Thursday?"))
+        lines = self.ask("What is Jim Gil de Lamadrid's schedule?").splitlines()
+        self.assertIn("  Monday:    2:00 – 3:00 PM (COSC 428, COSC 528)", lines)
+
+    def test_no_syllabus(self) -> None:
+        self.assertIn("There is no syllabus for COSC 369", self.ask("What are the prerequisites for COSC 369?"))
 
     def test_raw_prolog_query(self) -> None:
         self.assertEqual(self.ask("?- lecturer_of('COSC 369', Name)."), "Name = Dr. Tankeh")

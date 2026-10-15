@@ -37,11 +37,12 @@ OFFICE HOURS
 NOTE: Instructors are not to be interrupted during class times.
 
 Q: Which office hours are on Wednesday?
-Office hours on Wednesday (3):
-  Time                Lecturer      Location
-  9:45 – 10:45 AM     Jordan Ellis  CS 220
-  10:45 AM – 1:00 PM  Dr. Tankeh    CS 214
-  3:00 – 5:00 PM      Dr. Tankeh    CS 214
+Office hours on Wednesday (4):
+  Time                Lecturer             Location
+  9:45 – 10:45 AM     Jordan Ellis         CS 220
+  10:45 AM – 1:00 PM  Dr. Tankeh           CS 214
+  2:00 – 3:00 PM      Jim Gil de Lamadrid  CSB 222
+  3:00 – 5:00 PM      Dr. Tankeh           CS 214
 
 Q: Who teaches COSC 369?
 COSC 369 Software Engineering I is taught by:
@@ -78,4 +79,12 @@ Q: ?- classes_of_lecturer([tankeh], Section, Code, Title).
 Section = COSC 330.001, Code = COSC 330, Title = Systems Programming I
 Section = COSC 369.001, Code = COSC 369, Title = Software Engineering I
 Section = COSC 631.001, Code = COSC 631, Title = Database Management
+
+Q: Who teaches COSC 631?
+COSC 631 Database Management is taught by:
+  Dr. Bo Yang (SY02): course syllabus, Spring 2022
+  Dr. Tankeh (CS01): COSC 631.001
+
+Q: What are the prerequisites for COSC 631?
+COSC 631 (graduate) requires COSC 531.
 
