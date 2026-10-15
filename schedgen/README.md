@@ -72,6 +72,12 @@ make test-kb    # 57 Prolog rule tests, 31 Python tests (incl. both syllabi), th
 make demo       # answers every question in data/questions.txt -> output/qa_demo.txt
 ```
 
+To build the submission package:
+
+```bash
+make dist       # clean build + every test + all output -> dist/Carlson_Cox_COSC631_Midterm.zip
+```
+
 ## 4. Asking questions
 
 ```bash
@@ -198,7 +204,8 @@ A copy of every output from a reference run is in `sample_output/`.
 | `ask` | Answer `Q="..."`, or interactive without `Q` |
 | `demo` | Answer every question in `data/questions.txt` |
 | `test`, `test-kb` | C tests; Prolog + Python tests and the end-to-end question |
-| `clean`, `distclean` | Remove `build/`; also `output/` and `.venv/` |
+| `dist` | Clean build, every test, all output, then the submission zip `dist/Carlson_Cox_COSC631_Midterm.zip` |
+| `clean`, `distclean` | Remove `build/`; also `output/`, `.venv/` and `dist/` |
 
 `make` rebuilds only what is out of date: editing `data/faculty.csv` and running `make ask` re-runs the C
 program, regenerates the knowledge base and answers from the new data.

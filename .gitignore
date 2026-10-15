@@ -4,3 +4,4 @@ schedgen/output/
 schedgen/.venv/
 .ruff_cache/
 __pycache__/
+schedgen/dist/

@@ -12,7 +12,8 @@
 #   make demo       answer every question in data/questions.txt -> output/qa_demo.txt
 #   make test-kb    Prolog rule tests (plunit) + Python tests + end-to-end question test
 #   make fetch      OPTIONAL: download the input files from URLs instead of using data/
-#   make clean      remove build products     make distclean   also remove output/ and .venv/
+#   make dist       clean build + all tests, then zip the submission: dist/Carlson_Cox_COSC631_Midterm.zip
+#   make clean      remove build products     make distclean   also remove output/, .venv/ and dist/
 #
 # Dependency chain (make rebuilds only what is out of date):
 #   src/lib/*.c --> build/obj/lib/*.o --> build/libschedule.a --+
@@ -70,7 +71,7 @@ TXT_OUT  := $(OUT)/schedule.txt
 DOCX_OUT := $(OUT)/Faculty_Schedules.docx
 XLSX_OUT := $(OUT)/Faculty_Schedules.xlsx
 
-.PHONY: all lib csv run docs test inspect fetch clean distclean help venv kb ask demo test-kb
+.PHONY: all lib csv run docs test inspect fetch clean distclean help venv kb ask demo test-kb dist
 
 # ---- Default target ------------------------------------------------------------------------------
 all: $(BIN)
@@ -221,14 +222,36 @@ fetch:
 	mv $(FACULTY).download $(FACULTY)
 	@echo "Downloaded inputs into data/. Run 'make docs' to regenerate."
 
+# ---- Submission package --------------------------------------------------------------------------
+# make dist: rebuild from scratch, run every test, regenerate all output, then zip the submission.
+# The zip holds the static library built from exactly these sources, and sample_output/ from this run.
+DIST_NAME := Carlson_Cox_COSC631_Midterm
+DIST_DIR  := dist/$(DIST_NAME)
+DIST_SRC  := Makefile README.md requirements.txt ruff.toml $(wildcard include/*.h) src/main.c $(LIB_SRCS) \
+             $(SCHEDULE_XLSX) $(SYLLABUS) $(FACULTY) $(QUESTIONS) $(SYLLABI) $(wildcard scripts/*.py) $(RULES) \
+             $(TEST_SRC) $(wildcard tests/*.py tests/*.pl tests/data/*) docs/report.md docs/report.pdf
+SAMPLES   := $(TXT_OUT) $(CSV_OUT) $(OUT)/diagnostics.txt $(DOCX_OUT) $(XLSX_OUT) $(KB) $(QA_OUT)
+
+dist:
+	$(MAKE) clean
+	$(MAKE) all test test-kb demo docs
+	rm -rf $(DIST_DIR) dist/$(DIST_NAME).zip
+	mkdir -p $(DIST_DIR)/build $(DIST_DIR)/sample_output
+	tar cf - $(DIST_SRC) | (cd $(DIST_DIR) && tar xf -)
+	cp $(LIB) $(DIST_DIR)/build/
+	cp $(SAMPLES) $(DIST_DIR)/sample_output/
+	cp $(KB_TEST)/qa_demo.txt $(DIST_DIR)/sample_output/qa_demo_cs.txt
+	cd dist && $(PYTHON) -m zipfile -c $(DIST_NAME).zip $(DIST_NAME)
+	@echo "Submission package: dist/$(DIST_NAME).zip ($$(find $(DIST_DIR) -type f | wc -l | tr -d ' ') files)"
+
 # ---- Housekeeping --------------------------------------------------------------------------------
 clean:
 	rm -rf $(BUILD)
 
 distclean: clean
-	rm -rf $(OUT) .venv
+	rm -rf $(OUT) .venv dist
 
 help:
-	@sed -n '2,24p' Makefile
+	@sed -n '2,26p' Makefile
 
 -include $(DEPS)

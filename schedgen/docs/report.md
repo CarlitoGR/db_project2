@@ -832,13 +832,17 @@ Q: Are there any conflicts?
 
 # Appendix A – Submission contents
 
+`make dist` produces the submission, `dist/Carlson_Cox_COSC631_Midterm.zip`: it rebuilds everything from a clean
+tree, runs every test, regenerates all output, and packages the files below. The static library and the sample
+output in the zip therefore come from exactly the submitted source.
+
 | Path | Contents |
 |---|---|
-| `Makefile` | Build, library, csv, run, docs, test, inspect, fetch, clean; midterm: kb, ask, demo, test-kb |
+| `Makefile` | Build, library, csv, run, docs, test, inspect, fetch, clean; midterm: kb, ask, demo, test-kb, dist |
 | `README.md` | Compilation and run instructions |
 | `include/*.h` | 8 headers (7 modules + umbrella `schedule.h`) |
 | `src/main.c`, `src/lib/*.c` | Driver + 7 library modules |
-| `build/libschedule.a` | Static library (rebuilt by `make`) |
+| `build/libschedule.a` | Static library, built from the submitted source by `make dist` |
 | `data/CTEC_Fall_2026_Schedule.xlsx` | Department class schedule (source) |
 | `data/class_schedule.csv` | Input file 1 (CSV export of the workbook) |
 | `data/faculty.csv` | Input file 2 |
