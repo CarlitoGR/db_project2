@@ -1,238 +1,118 @@
 # Faculty Schedule Generator (`schedgen`)
 
-COSC 631 – Software Engineering, Second Project.
+**COSC 631 – Software Engineering · Midterm** · Carlson Cox
 
-A C program that reads **exactly two input files**, the department class schedule and a faculty information
-file, and generates each professor's **teaching schedule** and **office-hours schedule**. All scheduling logic
-lives in a **static library** (`libschedule.a`). A **Makefile** builds the library, links it with the main
-program, runs it, and calls Python scripts to (1) export the department's Excel schedule to CSV and
-(2) convert the C output into **Word (.docx)** and **Excel (.xlsx)** documents.
+A C program reads **exactly two input files** (the department class schedule and a faculty information file) and
+generates each professor's **teaching schedule** and **office-hours schedule**. All scheduling logic is in a
+**static library**, `libschedule.a`, and a **Makefile** builds it, links it with the main program and generates
+the output. Python scripts export the department spreadsheet to CSV and turn the C output into Word and Excel
+documents.
 
-Input data: **CTEC Fall 2026 schedule**, 56 sections, 25 instructors, 7-week sessions 7R1 / 7R2.
+**Midterm addition:** the system answers questions about the schedule.
 
-**Midterm extension: ask the schedule questions.** Python turns the program's output into Prolog **facts**,
-hand-written Prolog **rules** describe how they relate, and SWI-Prolog (through `pyswip`) answers questions:
-
-```bash
-make ask Q="What classes does Dr Stone teach?"
-make ask Q="Which office hours are on Wednesday?"
+```
+$ make ask Q="What classes does Dr Tankeh teach?"
 ```
 
-See [§10](#10-midterm-question-answering-python--prolog).
+| Part | Role |
+|------|------|
+| `scripts/gen_prolog.py` | **Python reads** the schedule data and **generates the facts and rules** for Prolog: `output/knowledge_base.pl` |
+| `output/knowledge_base.pl` | **Prolog stores the knowledge**: part 1 rules (from `prolog/rules.pl`), part 2 facts |
+| `scripts/ask.py` | Recognises the question, builds the Prolog query, prints the answer |
+| SWI-Prolog via `pyswip` | **The interpreter**: `consult("knowledge_base.pl")`, then answers each query |
+
+The full explanation of each part is in **`docs/report.pdf`** (§4 static libraries, §5 Makefile, §8 local vs.
+Internet input files, §11 Python and Prolog).
 
 ---
 
 ## 1. Requirements
 
-| Tool | Version tested | Needed for |
-|------|----------------|------------|
-| GCC (or Clang) | gcc 13 / clang 18 | compiling C11 |
-| GNU make | 4.x (3.81+ works) | build automation |
-| `ar` (binutils) | 2.42 | creating the static library |
-| Python 3 | 3.10+ | `.xlsx` → CSV export and `make docs` |
-| `python-docx`, `openpyxl` | see `requirements.txt` | Python scripts |
-| SWI-Prolog | 9.0 (8.4.2+ works) | midterm: the Prolog interpreter |
-| `pyswip` | 0.3 | midterm: Python ↔ Prolog bridge (`requirements.txt`) |
+| Tool | Tested | Used for |
+|------|--------|----------|
+| GCC or Clang, GNU make, `ar` | gcc 13, clang 18, make 4.3 | Compiling, the static library, build automation |
+| Python 3 | 3.12 | All Python scripts |
+| `python-docx`, `openpyxl`, `pyswip` | see `requirements.txt` | Word/Excel output, the Python ↔ Prolog bridge |
+| SWI-Prolog | 9.0 (8.4.2 or newer) | The Prolog interpreter |
 
-Linux / macOS / WSL. The program uses POSIX `getopt`, `mkdir` and `strtok_r`.
+Runs on Linux, macOS or Windows (WSL). Python and SWI-Prolog must both be 64-bit.
 
-## 2. Quick start
+## 2. Setup (once)
 
 ```bash
-python3 -m pip install -r requirements.txt   # once (or: make venv && make docs PYTHON=.venv/bin/python)
-make            # compile -> build/libschedule.a -> link build/schedgen
-make run        # export .xlsx to CSV if it changed, then generate output/schedule.txt + CSV files
-make docs       # convert output to output/Faculty_Schedules.docx and .xlsx
-make test       # unit tests + end-to-end conflict test
-make ask Q="What classes does Dr Stone teach?"   # midterm: answer a question (needs SWI-Prolog + pyswip)
+sudo apt-get install build-essential swi-prolog-nox   # macOS: brew install swi-prolog; Windows: use WSL
+python3 -m pip install -r requirements.txt
 ```
 
-`data/class_schedule.csv` is shipped already exported, so `make` and `make run` work without Python. Python is
-needed only when the `.xlsx` changes or for `make docs`.
+If `pyswip` reports that it cannot find SWI-Prolog, set `SWI_HOME_DIR` to the `PLBASE` value printed by
+`swipl --dump-runtime-variables`.
 
-> **The department schedule contains real conflicts** (2 double-booked rooms, 1 double-booked instructor, 1
-> impossible meeting time). The program still writes every schedule, lists the problems in
-> `output/diagnostics.txt` and on the first page of the Word document, and exits with status 3. `make run`
-> treats status 3 as "written with data issues" and continues. Use `make run STRICT=1` to make it fail instead.
+## 3. Compile and run
 
-## 3. Makefile targets
-
-| Target | What it does |
-|--------|--------------|
-| `all` (default) | Compiles `src/lib/*.c` to objects, archives them into `build/libschedule.a`, compiles `src/main.c`, links `build/schedgen` against the library |
-| `lib` | Builds only the static library |
-| `csv` | Exports `data/CTEC_Fall_2026_Schedule.xlsx` → `data/class_schedule.csv` (only if the workbook changed) |
-| `run` | Runs `build/schedgen` on the two input files (only if the program or an input changed) |
-| `docs` | Runs `scripts/export_docs.py` to produce `.docx` and `.xlsx` (only if the output changed) |
-| `test` | Builds `build/test_schedule` (linked against the same library) and runs it, then runs the program on deliberately broken inputs in `tests/data/` and checks each problem is caught |
-| `inspect` | Lists the object files inside the library (`ar -t`) and its exported functions (`nm`) |
-| `kb` | Midterm: `scripts/gen_prolog.py` writes the Prolog knowledge base `output/knowledge_base.pl`: rules + facts from the C output (only if something changed) |
-| `ask` | Midterm: `make ask Q="..."` answers one question; `make ask` alone is interactive |
-| `demo` | Midterm: answers every question in `data/questions.txt` → `output/qa_demo.txt` |
-| `test-kb` | Midterm: Prolog rule tests (plunit), Python tests, and the end-to-end "Dr Tankeh" question on `tests/data/cs_*.csv` |
-| `fetch` | **Optional.** Downloads the inputs from URLs: `make fetch SCHEDULE_URL=... FACULTY_URL=...` |
-| `clean` / `distclean` | Remove `build/` / also `output/` and `.venv/` |
-
-Variables: `make run BUFFER=10`, `make run STRICT=1`,
-`make run SCHEDULE_XLSX=data/Spring_2027.xlsx`, `make run FACULTY=other/faculty.csv`.
-
-## 4. Running the program directly
-
-```
-build/schedgen [-o OUTDIR] [-b BUFFER_MIN] [-q] <class_schedule.csv> <faculty.csv>
-
-  -o OUTDIR      output directory (default: output)
-  -b BUFFER_MIN  protected minutes before/after each class, 0-60 (default: 15)
-  -q             quiet: print only errors
-  -h / -V        help / version
-```
-
-Exit status: `0` success · `1` usage error (e.g. not exactly two files) · `2` input file cannot be read ·
-`3` schedule written but the data contains conflicts · `4` output error.
-
-## 5. Input files (stored locally in `data/`)
-
-### 5.1 Input 1: class schedule, the department spreadsheet
-
-`data/CTEC_Fall_2026_Schedule.xlsx` is used exactly as the department distributes it. `make` exports it to
-`data/class_schedule.csv` with `scripts/xlsx_to_csv.py`. The export is faithful (the same as Excel's
-"Save As → CSV") and changes no values. The C program reads that CSV in the department's native column layout:
-
-| Column (header, any order) | Used as |
-|---|---|
-| `ID` | Section ID, e.g. `CTEC 350.170` → course `CTEC 350`, section `170` |
-| `Course Title` | Title; a trailing `(7R1)` / `(7R2)` is read as the **session** (first / second 7 weeks) |
-| `CR` | Credits |
-| `Days` | `MW`, `TR`, `MWF` (R = Thursday); blank = asynchronous or TBA |
-| `Begin`, `End` | `4:00 PM`, `16:00` or `4:00:00 PM` |
-| `Room` | `108`, `201/112` (split room), `Online`, `Dept` (the last two are not physical rooms) |
-| `Instructor*` | Any header starting with "Instructor" (e.g. `Instructor 2025`), matched against the faculty file |
-| `Enroll #` | Enrollment |
-
-Headers are matched ignoring case, spaces and punctuation, so `CR ` and `End ` (trailing spaces) work.
-
-### 5.2 Input 2: `data/faculty.csv`, professor information
-
-| Column | Meaning / default |
-|--------|-------------------|
-| `faculty_id`, `name` | Required |
-| `aliases` | Every spelling of the name used in the schedule, `;`-separated, e.g. `Bemley;Bemley, J;Bemley, Jesse` |
-| `department`, `office`, `email`, `phone` | Printed on the schedule. Blank office → `Office TBA` (or `Online (virtual)` if all sections are online) |
-| `courses_taught` | Section IDs, cross-checked against the schedule |
-| `oh_hours_per_week` | Blank → policy default: max(3 h, 1 h per section) |
-| `oh_block_minutes` | Length of each generated block, default 60 |
-| `preferred_days` | Blank → the days the professor teaches |
-| `available_start`, `available_end` | Window for generated office hours, default 9:00 AM–9:00 PM |
-| `fixed_office_hours` | Hours the lecturer supplies, e.g. `"MW 3:00 PM-4:00 PM; T 1:00-2:00 PM"` |
-
-**Office, email and phone are blank in the shipped file.** They are not in the department schedule; fill them in
-to replace "Office TBA".
-
-## 6. How the source data is handled
-
-| Situation in the CTEC schedule | What the program does |
-|---|---|
-| Same instructor, same time, **different sessions** (e.g. CTEC 350.170 7R1 and 350.180 7R2) | Not a conflict. Conflicts are checked only within one session |
-| Office hours across sessions | One schedule for the whole semester that avoids **both** sessions' classes |
-| Name spelled differently (`Bemley` / `Bemley, J` / `Bemley, Jesse`; `Eugene Harris` / `Eugene T. Harris`) | Resolved through `aliases` in the faculty file |
-| End before start with an AM end time (`12:00 PM`–`3:15 AM`, `7:00 PM`–`9:50 AM`) | End moved to PM, **WARNING**, marked `*` in the schedule |
-| Impossible time (`5:00 PM`–`5:00 PM`, CTEC 711.555) | Listed as **TBA**, **ERROR** |
-| No days and "On-line Asynchronous Course" | Asynchronous section, listed with no meeting time |
-| `201/112` | Checked against both rooms 201 and 112 |
-| `Online`, `Dept` | Not physical rooms, excluded from room-conflict checks |
-
-## 7. Output (`output/`)
-
-| File | Produced by | Contents |
-|------|-------------|----------|
-| `schedule.txt` | C program | Per professor: CLASS SCHEDULE (with session), OFFICE HOURS, the class-time note, weekly grid |
-| `faculty_summary.csv`, `classes.csv`, `office_hours.csv` | C program | Data for the Python exporter |
-| `diagnostics.txt` | C program | Every error / warning / info message |
-| `Faculty_Schedules.docx` | Python | Page 1: data issues. Then one page per professor, in the sample's table style |
-| `Faculty_Schedules.xlsx` | Python | Summary, Classes, Office Hours, Data Issues, one sheet per professor |
-| `knowledge_base.pl` | Python (`make kb`) | Prolog knowledge base: the rules from `prolog/rules.pl` + facts (faculty, courses, sections, meetings, rooms, office hours, data issues) |
-| `qa_demo.txt` | Python + Prolog (`make demo`) | Answers to the questions in `data/questions.txt` |
-
-## 8. How office hours are assigned
-
-1. Each professor's week is a grid of 15-minute slots. Classes from **both** sessions are marked CLASS, and
-   `BUFFER` minutes on each side are protected. Office hours never touch class time.
-2. Lecturer-supplied hours are accepted unless they overlap a class. Conflicting hours are dropped with a
-   warning.
-3. The remaining hours are placed greedily. Each candidate block is scored: +30 on a teaching day, +20 when
-   touching a class or an existing office-hours block, −50 per block already on that day, −1 per 10 minutes
-   away from the day's classes, −100 on a non-preferred day. Touching blocks merge, so the result is
-   "Monday 1:45–3:45 PM", not two separate rows.
-
-## 9. Project layout
-
-```
-schedgen/
-├── Makefile  README.md  requirements.txt
-├── include/            public headers (schedule.h = umbrella header)
-├── src/main.c          command-line driver (the only C file not in the library)
-├── src/lib/            common.c csv.c diag.c loader.c report.c scheduler.c timeutil.c -> libschedule.a
-├── data/               CTEC_Fall_2026_Schedule.xlsx, class_schedule.csv (export), faculty.csv
-├── scripts/            xlsx_to_csv.py, export_docs.py, gen_prolog.py (facts), ask.py (questions)
-├── prolog/             rules.pl: the Prolog rule library (copied into the knowledge base by gen_prolog.py)
-├── tests/              C unit tests, broken inputs, test_rules.pl (plunit), test_kb.py, CS department (data/cs_*)
-├── sample_output/      output from a reference run
-└── docs/               project report (PDF + Markdown source)
-```
-
-## 10. Midterm: question answering (Python + Prolog)
-
-| Part | Role |
-|------|------|
-| `scripts/gen_prolog.py` | **Python reads** the schedule (the C program's normalised CSV output + `data/faculty.csv`) and **generates the facts and rules for Prolog**: one file, `output/knowledge_base.pl` |
-| `prolog/rules.pl` | The rule library gen_prolog.py puts in the knowledge base: who teaches what, office hours by day, availability, conflicts, workload |
-| `scripts/ask.py` | Front end: recognises the question, builds a Prolog query, prints the answer |
-| SWI-Prolog via `pyswip` | **Interpreter**: `consult("knowledge_base.pl")`, then answers each query by search |
-
-### Setup
+Run from this directory. Each step builds whatever the previous one needs, so `make ask` alone also works.
 
 ```bash
-sudo apt-get install swi-prolog-nox            # Windows / macOS: installer from https://www.swi-prolog.org
-python3 -m pip install -r requirements.txt     # includes pyswip
+make            # 1. compile src/lib/*.c -> build/libschedule.a, compile main.c, link build/schedgen
+make run        # 2. run the C program on the two input files -> output/schedule.txt + CSV files
+make docs       # 3. Python: output -> output/Faculty_Schedules.docx and .xlsx
+make kb         # 4. Python: output -> Prolog knowledge base output/knowledge_base.pl
+make ask Q="What is Dr Stone's schedule?"   # 5. ask a question (make ask alone = interactive)
 ```
 
-Python and SWI-Prolog must both be 64-bit. If `pyswip` cannot find Prolog, set `SWI_HOME_DIR` to the `PLBASE`
-value printed by `swipl --dump-runtime-variables`.
+`make run` reports **"conflicts found in the input data"**. That is expected: the CTEC schedule has two
+double-booked rooms, one double-booked instructor and one impossible meeting time. Every schedule is still
+written and the problems are listed in `output/diagnostics.txt` (the program exits with status 3; `make run
+STRICT=1` turns that into a failure).
 
-### Asking questions
+To check everything:
 
 ```bash
-make ask Q="What classes does Dr Stone teach?"
-make ask                                         # interactive: ask> ...   ('help' lists examples, 'quit' exits)
-python3 scripts/ask.py "Who teaches CTEC 350?"   # same thing without make (after 'make kb')
-make demo                                        # every question in data/questions.txt -> output/qa_demo.txt
-swipl output/knowledge_base.pl                   # query Prolog directly: ?- lecturer_of('CTEC 350', N).
+make test       # C: 104 unit checks on the library + end-to-end tests on broken input files
+make test-kb    # Prolog rule tests, Python tests, and the "Dr Tankeh" question end to end
+make demo       # answers every question in data/questions.txt -> output/qa_demo.txt
 ```
 
-Questions it understands (names, courses, days and rooms are looked up in the data):
+## 4. Asking questions
 
-| Kind | Examples |
-|------|----------|
-| A lecturer's classes | What classes does Dr Stone teach? · What does Agada teach on Monday? · Dixon's classes |
-| Full schedule (sample layout) | What is Dr Stone's schedule? · Schedule for Ruth Agada (CLASS SCHEDULE + OFFICE HOURS + NOTE) |
+```bash
+make ask Q="What classes does Dr Stone teach?"     # one question
+make ask                                           # interactive: ask> ...  ('help' for examples, 'quit')
+python3 scripts/ask.py "Who teaches CTEC 350?"     # without make (after make kb)
+swipl output/knowledge_base.pl                     # Prolog directly: ?- lecturer_of('CTEC 350', Name).
+```
+
+Names, course codes, titles, days and rooms are looked up in the data; none is built into the program.
+
+| Question type | Examples |
+|---------------|----------|
+| Full schedule (sample layout) | What is Dr Stone's schedule? · Schedule for Ruth Agada |
+| A lecturer's classes | What classes does Dr Stone teach? · What does Agada teach on Monday? |
 | Who teaches a course | Who teaches CTEC 350? · Who teaches Python? · Who is the instructor for UNIX System Administration? |
 | Office hours | What are Ruth Agada's office hours? · Which office hours are on Wednesday? |
 | Days and rooms | Which classes meet on Tuesday? · Which classes are in room 108? · Who teaches on Friday? |
-| A course's time and place | Where does CTEC 435 meet? · When does CTEC 410.170 meet? |
+| Time and place of a course | Where does CTEC 435 meet? · When does CTEC 410.170 meet? |
 | Availability | Is Dr Stone available on Monday at 3 PM? |
 | Workload, conflicts | How many sections does Carl Dixon teach? · Are there any conflicts? · List all lecturers |
-| Raw Prolog | `?- teaches_course(Id, 'CTEC 302').` |
+| Any Prolog query | `?- teaches_course(Id, 'CTEC 302').` |
+
+A misspelled name gets a suggestion ("Did you mean: Dr. D. B. Stone?"), and a name that is not in the data gets
+a clear "no lecturer named ..." answer.
 
 ### The Dr Tankeh example
 
-The CTEC schedule has no Dr Tankeh, so on that data the system says so. `tests/data/cs_class_schedule.csv` and
-`tests/data/cs_faculty.csv` describe a small CS department whose Dr Tankeh entries (COSC 631, 369, 330 and the
-lecturer-supplied office hours) come from the sample in the project specification. `make test-kb` runs the
-whole pipeline on those two files and checks the answer. `sample_output/qa_demo_cs.txt` has the answers; the
-full schedule matches the sample in the specification:
+The CTEC Fall 2026 schedule has no Dr Tankeh. To demonstrate the question from the assignment,
+`tests/data/cs_class_schedule.csv` and `tests/data/cs_faculty.csv` describe a small Computer Science department
+whose Dr Tankeh entries (COSC 631, 369 and 330, and the office hours) come from the sample in the
+specification. They are **input data**; the program is unchanged. Run the system on them:
+
+```bash
+make
+build/schedgen -o out_cs tests/data/cs_class_schedule.csv tests/data/cs_faculty.csv
+python3 scripts/gen_prolog.py --input out_cs --faculty tests/data/cs_faculty.csv -o out_cs/knowledge_base.pl
+python3 scripts/ask.py --kb out_cs/knowledge_base.pl "What is Dr Tankeh's schedule?"
+```
 
 ```
-Q: What is Dr Tankeh's schedule?
 Dr. Tankeh (CS01) | Computer Science (COSC) | Office: CS 214
 
 CLASS SCHEDULE
@@ -251,13 +131,78 @@ OFFICE HOURS
 NOTE: Instructors are not to be interrupted during class times.
 ```
 
-The same three steps work for any pair of input files, e.g. the CS department:
+More answers: `sample_output/qa_demo_cs.txt` (CS department) and `sample_output/qa_demo.txt` (CTEC schedule).
 
-```bash
-build/schedgen -o out_cs tests/data/cs_class_schedule.csv tests/data/cs_faculty.csv
-python3 scripts/gen_prolog.py --input out_cs --faculty tests/data/cs_faculty.csv -o out_cs/knowledge_base.pl
-python3 scripts/ask.py --kb out_cs/knowledge_base.pl "What is Dr Tankeh's schedule?"
+## 5. Input files
+
+Both input files are **stored locally** in `data/`, so the system runs on a lab computer without network
+access and always produces the same output from the same files (report §8 explains the choice).
+
+| File | Contents |
+|------|----------|
+| `data/CTEC_Fall_2026_Schedule.xlsx` | The department's class schedule, exactly as distributed |
+| `data/class_schedule.csv` | **Input 1**: CSV export of the workbook (`make csv` refreshes it when the `.xlsx` changes) |
+| `data/faculty.csv` | **Input 2**: one row per lecturer: name spellings, department, office, courses, office-hours policy, lecturer-supplied office hours |
+
+The schedule has 56 sections and 25 instructors in two 7-week sessions (7R1, 7R2). Office, email and phone are
+blank in `faculty.csv` because the department data does not include them; filling them in replaces "Office TBA".
+`make fetch SCHEDULE_URL=... FACULTY_URL=...` can download newer copies, but it is not used by default.
+
+## 6. Output (`output/`)
+
+| File | Made by | Contents |
+|------|---------|----------|
+| `schedule.txt` | C | Per professor: CLASS SCHEDULE, OFFICE HOURS, the class-time note, weekly grid |
+| `classes.csv`, `office_hours.csv`, `faculty_summary.csv` | C | The schedule as data, read by the Python scripts |
+| `diagnostics.txt` | C | Every error, warning and note about the input data |
+| `Faculty_Schedules.docx`, `.xlsx` | Python | The schedules as Word and Excel documents |
+| `knowledge_base.pl` | Python | The Prolog knowledge base: rules + 602 facts |
+| `qa_demo.txt` | Python + Prolog | Answers to `data/questions.txt` |
+
+A copy of every output from a reference run is in `sample_output/`.
+
+## 7. Makefile targets
+
+| Target | Does |
+|--------|------|
+| `make` (`all`) | Compile the library sources, archive `build/libschedule.a`, compile and link `build/schedgen` |
+| `lib` | Build only the static library |
+| `inspect` | Show the library's members (`ar -t`) and exported functions (`nm`) |
+| `csv` | Export the `.xlsx` to `data/class_schedule.csv` (only if the workbook changed) |
+| `run` | Run the program on the two input files (only if the program or an input changed) |
+| `docs` | Word and Excel documents |
+| `kb` | Prolog knowledge base `output/knowledge_base.pl` |
+| `ask` | Answer `Q="..."`, or interactive without `Q` |
+| `demo` | Answer every question in `data/questions.txt` |
+| `test`, `test-kb` | C tests; Prolog + Python tests and the end-to-end question |
+| `clean`, `distclean` | Remove `build/`; also `output/` and `.venv/` |
+
+`make` rebuilds only what is out of date: editing `data/faculty.csv` and running `make ask` re-runs the C
+program, regenerates the knowledge base and answers from the new data.
+
+Running the C program by itself:
+
+```
+build/schedgen [-o OUTDIR] [-b BUFFER_MIN] [-q] <class_schedule.csv> <faculty.csv>
 ```
 
-The report (`docs/report.pdf`, §11) explains the design, the fact and rule schema, and how a question is
-answered step by step.
+Exit status: `0` success, `1` not exactly two input files, `2` input file unreadable, `3` schedule written but
+the data has conflicts, `4` output error.
+
+## 8. Project layout
+
+```
+schedgen/
+├── Makefile  README.md  requirements.txt
+├── include/         8 headers (schedule.h includes the rest)
+├── src/main.c       command-line driver, the only C file outside the library
+├── src/lib/         common.c csv.c diag.c loader.c report.c scheduler.c timeutil.c  -> build/libschedule.a
+├── data/            the two input files (+ the source .xlsx) and questions.txt
+├── scripts/         xlsx_to_csv.py  export_docs.py  gen_prolog.py  ask.py
+├── prolog/          rules.pl: the Prolog rules included in the knowledge base
+├── tests/           C unit tests, Prolog tests (test_rules.pl), Python tests (test_kb.py), test input files
+├── sample_output/   every output file from a reference run
+└── docs/            report.pdf (the report) and report.md (its source)
+```
+
+The static library `build/libschedule.a` is produced by `make`.
