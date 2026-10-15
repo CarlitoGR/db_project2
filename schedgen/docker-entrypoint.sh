@@ -14,6 +14,9 @@ case "$1" in
         exec "$@"
         ;;
     *)
-        exec make ask Q="$*"
+        # Bring the knowledge base up to date (a no-op unless mounted inputs changed), then pass the question
+        # to ask.py as a single argument. Going around make keeps quotes and '$' in the question intact.
+        make --no-print-directory -s kb >/dev/null
+        exec python3 scripts/ask.py --kb output/knowledge_base.pl "$*"
         ;;
 esac

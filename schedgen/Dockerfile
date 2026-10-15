@@ -33,9 +33,11 @@ COPY requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
 # Run as the image's unprivileged 'ubuntu' user (UID 1000); it owns /app so make can write build/, output/
-# and dist/.
+# and dist/. WORKDIR creates /app as root and COPY --chown only changes the copied files, so /app itself is
+# handed over explicitly; without it make cannot create build/ or output/.
 WORKDIR /app
 COPY --chown=ubuntu:ubuntu . .
+RUN chown ubuntu:ubuntu /app
 USER ubuntu
 
 # Build the static library and program, run them, and generate the knowledge base at image build time,
