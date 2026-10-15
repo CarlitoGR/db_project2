@@ -1,0 +1,36 @@
+# Questions answered by 'make demo' (output: output/qa_demo.txt). One per line; '#' lines are comments.
+# Edit freely: names, courses and days are looked up in the knowledge base, nothing here is built in.
+What classes does Dr Stone teach?
+What is Ruth Agada's schedule?
+Who teaches CTEC 350?
+Who teaches Python?
+What are Ruth Agada's office hours?
+Which office hours are on Wednesday?
+Which classes meet on Friday?
+Which classes are in room 108?
+Where does CTEC 435 meet?
+Is Dr Stone available on Monday at 3 PM?
+How many sections does Marcella Wilson teach?
+Who teaches on Saturday?
+Are there any conflicts?
+What classes does Dr Tankeh teach?
+?- lecturer_of('CTEC 410', Name).
+# From the course syllabi in data/syllabi/
+Which syllabi do you have?
+Who teaches COSC 631?
+What is COSC 631 about?
+What are the prerequisites for COSC 528?
+Can I take COSC 631 if I completed COSC 531?
+How is COSC 528 graded?
+How much is the final worth in COSC 631?
+What grade is 85 in COSC 631?
+What textbook does COSC 528 use?
+What is covered in week 6 of COSC 528?
+When is quicksort covered?
+When is the midterm in COSC 631?
+What is the outline for COSC 631?
+What are the office hours for COSC 631?
+What is Jim Gil de Lamadrid's schedule?
+How do I contact Dr Yang?
+When is the last day to add/drop?
+Which office hours are on Thursday?

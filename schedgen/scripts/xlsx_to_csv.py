@@ -64,8 +64,10 @@ def main(argv: list[str] | None = None) -> int:
     try:
         count = export(args.workbook, args.output, args.sheet)
     except ModuleNotFoundError as exc:
-        print(f"xlsx_to_csv: missing Python package '{exc.name}'. Run: python3 -m pip install -r requirements.txt",
-              file=sys.stderr)
+        print(
+            f"xlsx_to_csv: missing Python package '{exc.name}'. Run: python3 -m pip install -r requirements.txt",
+            file=sys.stderr,
+        )
         return 1
     print(f"xlsx_to_csv: wrote {count} sections to {args.output}")
     return 0

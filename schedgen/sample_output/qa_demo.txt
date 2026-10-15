@@ -1,0 +1,238 @@
+Q: What classes does Dr Stone teach?
+Dr. D. B. Stone (CT22) teaches 4 section(s), 13 credit hours:
+
+CLASS SCHEDULE
+  Course                                      Session  Times                                   Location
+  CTEC 120 (Prin of SecureCoding Using Jav)   7R1      Monday & Wednesday 12:00 PM to 3:15 PM  116
+  CTEC 125.555 (Intro to Python programming)  7R1      Online asynchronous (no set time)       Online
+  CTEC 324 (Database Appl Dev)                7R2      Monday & Wednesday 4:00 PM to 6:50 PM   online
+  CTEC 125.556 (Intro to Python programming)  7R2      Online asynchronous (no set time)       Online
+
+Q: What is Ruth Agada's schedule?
+Ruth Agada (CT02) | Computer Technology (CTEC) | Office: Office TBA
+
+CLASS SCHEDULE
+  Course                                 Session  Times                                  Location
+  CTEC 402 (Software and OS Security)    7R2      Monday & Wednesday 7:00 PM to 9:50 PM  Online
+  CTEC 435 (UNIX System Administration)  7R2      Monday & Wednesday 7:00 PM to 9:50 PM  108
+  CTEC 711 (IoT Capstone I)              7R2      TBA                                    Online
+
+OFFICE HOURS
+  Monday:    4:45 – 6:45 PM (CTEC 402, CTEC 435)
+  Tuesday:
+  Wednesday: 5:45 – 6:45 PM (CTEC 402, CTEC 435)
+  Thursday:
+  Friday:
+NOTE: Instructors are not to be interrupted during class times.
+
+Q: Who teaches CTEC 350?
+CTEC 350 Prin & Meth of Intru Det & Pre is taught by:
+  Anthony Adedoyin (CT01): CTEC 350.170 [7R1], CTEC 350.180 [7R2]
+
+Q: Who teaches Python?
+CTEC 125 Intro to Python programming is taught by:
+  Dr. D. B. Stone (CT22): CTEC 125.555 [7R1], CTEC 125.556 [7R2]
+
+Q: What are Ruth Agada's office hours?
+Ruth Agada (CT02) | Computer Technology (CTEC) | Office: Office TBA
+OFFICE HOURS
+  Monday:    4:45 – 6:45 PM (CTEC 402, CTEC 435)
+  Tuesday:
+  Wednesday: 5:45 – 6:45 PM (CTEC 402, CTEC 435)
+  Thursday:
+  Friday:
+NOTE: Instructors are not to be interrupted during class times.
+
+Q: Which office hours are on Wednesday?
+Office hours on Wednesday (20):
+  Time                 Lecturer             Location
+  9:45 – 10:45 AM      J. Vega              Office TBA
+  10:45 – 11:45 AM     Dr. D. B. Stone      Office TBA
+  11:15 AM – 12:15 PM  Staphord Bengesi     Office TBA
+  2:00 – 3:00 PM       Jim Gil de Lamadrid  CSB 222
+  2:45 – 3:45 PM       Adrian D. Carter     Office TBA
+  2:45 – 3:45 PM       Anthony Adedoyin     Office TBA
+  2:45 – 3:45 PM       Carl Dixon           Office TBA
+  2:45 – 3:45 PM       Courtney Lamar       Online (virtual)
+  2:45 – 3:45 PM       Felix Njeh           Online (virtual)
+  2:45 – 3:45 PM       Henri E. Cooper      Online (virtual)
+  2:45 – 3:45 PM       Marcella J. Wilson   Office TBA
+  2:45 – 3:45 PM       Victoria Lee         Office TBA
+  3:45 – 4:45 PM       Brett Tolbert        Office TBA
+  3:45 – 4:45 PM       P. Agboli            Office TBA
+  5:45 – 6:45 PM       Loubna Dali          Office TBA
+  5:45 – 6:45 PM       Marvin Bright        Online (virtual)
+  5:45 – 6:45 PM       Ruth Agada           Office TBA
+  5:45 – 6:45 PM       Stephanie R. Miller  Office TBA
+  5:45 – 6:45 PM       Wilbert R. Francis   Office TBA
+  7:15 – 8:15 PM       Dr. D. B. Stone      Office TBA
+
+Q: Which classes meet on Friday?
+No classes meet on Friday.
+
+Q: Which classes are in room 108?
+Classes in room 108 (6):
+  Course                                         Session  Times                                  Location  Lecturer
+  CTEC 350.170 (Prin & Meth of Intru Det & Pre)  7R1      Monday & Wednesday 4:00 PM to 6:50 PM  108       Anthony Adedoyin
+  CTEC 435.170 (UNIX System Administration)      7R1      Monday & Wednesday 7:00 PM to 9:50 PM  108       Anthony Adedoyin
+  CTEC 222 (Linux Operating System)              7R1      Tuesday & Thursday 7:00 PM to 9:50 PM  108       Curtis Roberts
+  CTEC 350.180 (Prin & Meth of Intru Det & Pre)  7R2      Monday & Wednesday 4:00 PM to 6:50 PM  108       Anthony Adedoyin
+  CTEC 435.180 (UNIX System Administration)      7R2      Monday & Wednesday 7:00 PM to 9:50 PM  108       Ruth Agada
+  CTEC 298 (Symbolic Computation use BigDa)      7R2      Tuesday & Thursday 4:00 PM to 6:50 PM  108       Jesse Bemley
+
+Q: Where does CTEC 435 meet?
+  Course                                     Session  Times                                  Location  Lecturer
+  CTEC 435.170 (UNIX System Administration)  7R1      Monday & Wednesday 7:00 PM to 9:50 PM  108       Anthony Adedoyin
+  CTEC 435.180 (UNIX System Administration)  7R2      Monday & Wednesday 7:00 PM to 9:50 PM  108       Ruth Agada
+
+Q: Is Dr Stone available on Monday at 3 PM?
+No. Dr. D. B. Stone is teaching CTEC 120.170 on Monday at 3:00 PM. Instructors are not to be interrupted during class times.
+
+Q: How many sections does Marcella Wilson teach?
+Marcella J. Wilson (CT25) teaches 4 section(s) totalling 13 credit hours.
+
+Q: Who teaches on Saturday?
+Nobody teaches on Saturday.
+
+Q: Are there any conflicts?
+3 scheduling conflict(s):
+  Room 112 is double-booked: CTEC 120.171 [7R1] Monday & Wednesday 5:00 PM to 7:00 PM vs CTEC 294.170 [7R1] Monday & Wednesday 4:00 PM to 6:50 PM
+  Room 111 is double-booked: CTEC 345.180 [7R2] Monday & Wednesday 5:00 PM to 7:50 PM vs CTEC 450.180 [7R2] Monday & Wednesday 7:00 PM to 9:50 PM
+  Ruth Agada is double-booked: CTEC 402.180 [7R2] Monday & Wednesday 7:00 PM to 9:50 PM vs CTEC 435.180 [7R2] Monday & Wednesday 7:00 PM to 9:50 PM
+
+Q: What classes does Dr Tankeh teach?
+No lecturer named 'Dr Tankeh' is in the knowledge base (faculty file and class schedule).
+
+Q: ?- lecturer_of('CTEC 410', Name).
+Name = Henry Okonofua
+
+Q: Which syllabi do you have?
+2 course syllabi:
+  Course                                                   Term         Instructor           File
+  COSC 428 / COSC 528 (Design and Analysis of Algorithms)  Fall 2026    Jim Gil de Lamadrid  COSC_528_Syllabus_Fall_2026.pdf
+  COSC 631 (Database Information Systems II)               Spring 2022  Dr. Bo Yang          COSC_631_Syllabus_Spring_2022.pdf
+
+Q: Who teaches COSC 631?
+COSC 631 Database Information Systems II is taught by:
+  Dr. Bo Yang (SY02): course syllabus, Spring 2022
+
+Q: What is COSC 631 about?
+COSC 631 (Database Information Systems II), 3 credits, Spring 2022
+  Instructor:   Dr. Bo Yang
+  Prerequisite: COSC 531
+  Source:       COSC_631_Syllabus_Spring_2022.pdf
+  To study the further database techniques beyond which covered in the COSC531, and thus to acquaint
+  the students with some relatively advanced issues. At the end of the course students should be able
+  to: gain an awareness of the advanced issues in relational data models, learn about the query
+  optimization technology and applications, familiarize with the XML, data-warehousing and data-mining
+  techniques and other advanced topics, apply the knowledge acquired to solve simple problems.
+
+Q: What are the prerequisites for COSC 528?
+COSC 428 (undergraduate) requires COSC 214.
+COSC 528 (graduate): no prerequisite is listed on the syllabus.
+
+Q: Can I take COSC 631 if I completed COSC 531?
+Yes: COSC 631 - it requires COSC 531, which you have.
+
+Q: How is COSC 528 graded?
+COSC 428 / COSC 528 (Design and Analysis of Algorithms), Fall 2026 syllabus
+  Component                 Weight
+  Group project             10%
+  Homeworks (6)             40%
+  Tests (2, noncumulative)  50%
+  Total                     100%
+  Letter grades: A 90-100 · B 80-89 · C 70-79 · D 60-69 · F 0-59
+
+Q: How much is the final worth in COSC 631?
+Final is worth 30% of the grade in COSC 631 (Database Information Systems II).
+
+Q: What grade is 85 in COSC 631?
+85 is a B in COSC 631 (Database Information Systems II) (B = 80-89).
+
+Q: What textbook does COSC 528 use?
+COSC 428 / COSC 528 (Design and Analysis of Algorithms)
+  Required text: McConnell, J. J., Analysis of Algorithms: An Active Learning Approach, 2nd ed., Jones an Bartlett Publishers, Inc., Sudbury, Massachusetts, 2001.
+  Reference:     Brassard, G., Bartley, P., Fundamentals of Algorithmics, Prentice Hall, Inc., Englewood Cliffs, New Jersey, 1996.
+  Reference:     Cormen, T. H., Leiserson, C. E., Rivest, R. L., Introduction to Algorithms, MIT Press, Cambridge, Massachusetts, 1990.
+  Reference:     Sedgewick, R., Algorithms in C, Addison-Wesley Publishing Co., 1990.
+
+Q: What is covered in week 6 of COSC 528?
+COSC 428 / COSC 528 (Design and Analysis of Algorithms), week 6: Hmwk. #3 · Quicksort, Polyphase Merge Sort. Reading: pp.113-130.
+
+Q: When is quicksort covered?
+COSC 428 / COSC 528 (Design and Analysis of Algorithms): week 6: Hmwk. #3 · Quicksort, Polyphase Merge Sort
+
+Q: When is the midterm in COSC 631?
+COSC 631 (Database Information Systems II): week 8 (3/16): Tentative Midterm
+
+Q: What is the outline for COSC 631?
+COSC 631 (Database Information Systems II), Spring 2022: weekly outline
+  Week  Date  Topics and due work                                      Reading
+  1     1/26  Syllabus and Further Discussion on Dependency
+  2     2/2   Query Processing and Optimization, Project#1
+  3     2/9   Transaction Processing
+  4     2/16  Database Recovery
+  5     2/23  Object-Oriented Database
+  6     3/2   Enhanced Data Models and Distributed Databases · Quiz#1
+  7     3/9   Web Database · Project#1 Due
+  8     3/16  Tentative Midterm
+  9     3/23  Spring Break
+  10    3/30  XML Extensible Markup Language · Quiz#2, Project#2
+  11    4/6   Data Mining Concepts
+  12    4/13  Data Warehousing and OLAP
+  13    4/20  Emerging Database Technologies
+  14    4/27  Presentation & Demo
+  15    5/4   Presentation & Demo · Project#2 Due
+  16    5/11  Final Exam Review · Survey Paper Due
+  17    5/18  Tentative Date of Non-Graduating Students · Final Exam
+
+Q: What are the office hours for COSC 631?
+Dr. Bo Yang (SY02) | Computer Science (COSC) | Office: Computer Science Building, Room 322
+OFFICE HOURS
+  Monday:
+  Tuesday:
+  Wednesday:
+  Thursday:  3:00 – 5:00 PM (COSC 631)
+  Friday:
+  Also: Other time by appointment
+NOTE: Instructors are not to be interrupted during class times.
+
+Q: What is Jim Gil de Lamadrid's schedule?
+Jim Gil de Lamadrid (SY01) | Computer Science (COSC) | Office: CSB 222
+
+COURSE SYLLABI (meeting times are not given on the syllabus)
+  Course                                                   Term       Prerequisite
+  COSC 428 / COSC 528 (Design and Analysis of Algorithms)  Fall 2026  COSC 214 (COSC 428 only)
+
+OFFICE HOURS
+  Monday:    2:00 – 3:00 PM (COSC 428, COSC 528)
+  Tuesday:   2:30 – 4:30 PM (COSC 428, COSC 528)
+  Wednesday: 2:00 – 3:00 PM (COSC 428, COSC 528)
+  Thursday:  2:30 – 4:30 PM (COSC 428, COSC 528)
+  Friday:
+NOTE: Instructors are not to be interrupted during class times.
+
+Q: How do I contact Dr Yang?
+Dr. Bo Yang (SY02) | Computer Science (COSC)
+  Office: Computer Science Building, Room 322
+  Email:  byang@bowiestate.edu
+  Phone:  2-4459 (in campus); 301-860-4459 (off campus)
+
+Q: When is the last day to add/drop?
+  Event                         Date      From the syllabus of
+  Last Day to Add/Drop a Class  09/04/26  COSC 428 / COSC 528, Fall 2026
+
+Q: Which office hours are on Thursday?
+Office hours on Thursday (10):
+  Time                 Lecturer             Location
+  10:45 – 11:45 AM     Jesse Bemley         Office TBA
+  10:45 – 11:45 AM     R. Baptiste          Office TBA
+  11:15 AM – 12:15 PM  Eugene T. Harris     Office TBA
+  2:30 – 4:30 PM       Jim Gil de Lamadrid  CSB 222
+  2:45 – 3:45 PM       Curtis Roberts       Office TBA
+  2:45 – 3:45 PM       Henry Okonofua       Office TBA
+  2:45 – 3:45 PM       Pierrot Chery        Office TBA
+  3:00 – 5:00 PM       Dr. Bo Yang          Computer Science Building, Room 322
+  5:45 – 6:45 PM       Shawn Deal           Office TBA
+  7:15 – 8:15 PM       Marcella J. Wilson   Office TBA
+

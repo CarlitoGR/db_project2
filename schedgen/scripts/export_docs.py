@@ -130,7 +130,7 @@ def write_docx(report: Report, path: Path) -> None:
     from docx.shared import Inches, Pt
 
     def shade(cell: object, color: str) -> None:
-        props = cell._tc.get_or_add_tcPr()  # noqa: SLF001 - python-docx has no public shading API
+        props = cell._tc.get_or_add_tcPr()  # python-docx has no public shading API
         fill = OxmlElement("w:shd")
         fill.set(qn("w:val"), "clear")
         fill.set(qn("w:color"), "auto")
@@ -274,11 +274,31 @@ def write_xlsx(report: Report, path: Path) -> None:
     end = write_block(
         summary,
         1,
-        ["Faculty ID", "Name", "Department", "Office-Hours Location", "Email", "Phone", "Sections", "Enrollment",
-         "OH Required (h)", "OH Assigned (h)"],
         [
-            [f.faculty_id, f.name, f.department, f.location, f.email, f.phone, f.sections, f.enrollment,
-             f.required_hours, f.assigned_hours]
+            "Faculty ID",
+            "Name",
+            "Department",
+            "Office-Hours Location",
+            "Email",
+            "Phone",
+            "Sections",
+            "Enrollment",
+            "OH Required (h)",
+            "OH Assigned (h)",
+        ],
+        [
+            [
+                f.faculty_id,
+                f.name,
+                f.department,
+                f.location,
+                f.email,
+                f.phone,
+                f.sections,
+                f.enrollment,
+                f.required_hours,
+                f.assigned_hours,
+            ]
             for f in report.faculty
         ],
     )
@@ -288,12 +308,37 @@ def write_xlsx(report: Report, path: Path) -> None:
     end = write_block(
         classes,
         1,
-        ["Section", "Title", "Session", "Instructor (as listed)", "Faculty", "Meeting", "Days", "Start", "End",
-         "Room", "Credits", "Enrollment", "Note"],
         [
-            [c["section_id"], c["title"], c["session"], c["instructor_as_listed"], c["faculty_name"], c["meeting"],
-             c["days"], c["start_time"], c["end_time"], c["room"], as_int(c["credits"]), as_int(c["enrollment"]),
-             c["note"]]
+            "Section",
+            "Title",
+            "Session",
+            "Instructor (as listed)",
+            "Faculty",
+            "Meeting",
+            "Days",
+            "Start",
+            "End",
+            "Room",
+            "Credits",
+            "Enrollment",
+            "Note",
+        ],
+        [
+            [
+                c["section_id"],
+                c["title"],
+                c["session"],
+                c["instructor_as_listed"],
+                c["faculty_name"],
+                c["meeting"],
+                c["days"],
+                c["start_time"],
+                c["end_time"],
+                c["room"],
+                as_int(c["credits"]),
+                as_int(c["enrollment"]),
+                c["note"],
+            ]
             for c in all_classes
         ],
     )
@@ -305,8 +350,7 @@ def write_xlsx(report: Report, path: Path) -> None:
         1,
         ["Faculty ID", "Faculty", "Days", "Start", "End", "Location", "Arranged by"],
         [
-            [r["faculty_id"], r["faculty_name"], r["days"], r["start_time"], r["end_time"], r["location"],
-             r["source"]]
+            [r["faculty_id"], r["faculty_name"], r["days"], r["start_time"], r["end_time"], r["location"], r["source"]]
             for f in report.faculty
             for r in f.office_hours
         ],
