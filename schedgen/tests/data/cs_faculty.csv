@@ -1,0 +1,5 @@
+# Small Computer Science department used by 'make test-kb'. Dr. Tankeh's courses and office hours follow
+# the sample output in the project specification; the office hours are the lecturer-supplied table.
+faculty_id,name,aliases,department,office,email,phone,courses_taught,oh_hours_per_week,oh_block_minutes,preferred_days,available_start,available_end,fixed_office_hours
+CS01,Dr. Tankeh,Dr. Tankeh;"Tankeh, Dr.";Tankeh,Computer Science (COSC),CS 214,,,COSC 631.001;COSC 369.001;COSC 330.001,11,60,,9:00 AM,9:00 PM,"MTWR 10:45 AM-1:00 PM; W 3:00 PM-5:00 PM"
+CS02,Jordan Ellis,"Ellis, Jordan;Jordan Ellis",Computer Science (COSC),CS 220,,,COSC 112.001;COSC 112.002;COSC 450.001,,60,,9:00 AM,5:00 PM,

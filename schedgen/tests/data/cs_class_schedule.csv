@@ -1,0 +1,7 @@
+ID,Course Title,CR ,Days,Begin,End ,Room,Instructor 2025,Enroll,Enroll #
+COSC 631.001,Database Management,3,W,5:00 PM,7:30 PM,CS 313,Dr. Tankeh,,22
+COSC 369.001,Software Engineering I,3,TR,9:30 AM,10:45 AM,CS 108,"Tankeh, Dr.",,30
+COSC 330.001,Systems Programming I,3,MW,9:30 AM,10:45 AM,CS 311,Tankeh,,28
+COSC 112.001,Introduction to Programming,3,MW,11:00 AM,12:15 PM,CS 108,"Ellis, Jordan",,35
+COSC 112.002,Introduction to Programming,3,TR,1:00 PM,2:15 PM,CS 313,"Ellis, Jordan",,32
+COSC 450.001,Operating Systems,3,TR,9:30 AM,10:45 AM,CS 311,Jordan Ellis,,20

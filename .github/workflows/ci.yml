@@ -9,6 +9,7 @@
 #   build          -Werror build, static library, inspect archive -> artifact
 #   test           unit + end-to-end tests (GCC and Clang) | ASan/UBSan | Valgrind
 #   docs           Word / Excel / text schedules -> downloadable artifact
+#   knowledge-base Python -> Prolog facts; plunit rule tests, Python tests, Q&A demo -> artifact
 #   data-quality   annotates every conflict in the class schedule as a workflow warning
 # =================================================================================================
 
@@ -54,9 +55,9 @@ jobs:
       - name: Install tools
         run: python -m pip install ruff==0.16.8 -r requirements.txt
       - name: Ruff lint
-        run: ruff check --output-format=github scripts/
+        run: ruff check --output-format=github scripts/ tests/
       - name: Ruff format check
-        run: ruff format --check scripts/
+        run: ruff format --check scripts/ tests/
       - name: Committed CSV matches the workbook
         run: |
           python scripts/xlsx_to_csv.py data/CTEC_Fall_2026_Schedule.xlsx "$RUNNER_TEMP/class_schedule.csv"
@@ -184,6 +185,50 @@ jobs:
           path: |
             schedgen/output/
             !schedgen/output/.*.stamp
+          retention-days: 30
+          if-no-files-found: error
+
+  # -------------------------------------------------------------------------------- knowledge base
+  # Python turns the C program's output into Prolog facts; SWI-Prolog answers questions through pyswip.
+  knowledge-base:
+    needs: [build, test-unit]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install SWI-Prolog
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends swi-prolog-nox
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: schedgen/requirements.txt
+      - run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v8
+        with:
+          name: schedgen-build
+          path: schedgen/build
+      - run: chmod +x build/schedgen
+      - name: Rule tests (plunit), Python tests, end-to-end question (CS department fixture)
+        run: make -o build/schedgen -o build/libschedule.a test-kb
+      - name: Knowledge base and Q&A demo on the CTEC schedule
+        run: make -o build/schedgen -o build/libschedule.a demo
+      - name: Job summary
+        run: |
+          {
+            echo "## Question answering (Prolog)"
+            echo '```'
+            sed -n '1,40p' build/kb_test/qa_demo.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: knowledge-base
+          path: |
+            schedgen/output/facts.pl
+            schedgen/output/qa_demo.txt
+            schedgen/build/kb_test/facts.pl
+            schedgen/build/kb_test/qa_demo.txt
           retention-days: 30
           if-no-files-found: error
 

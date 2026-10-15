@@ -7,6 +7,10 @@
 #   make test       build and run unit tests + an end-to-end conflict test
 #   make inspect    show what is inside the static library (ar -t, nm)
 #   make csv        export the department workbook (.xlsx) to the CSV the C program reads
+#   make kb         Python turns the program's output into Prolog facts (output/facts.pl)
+#   make ask        ask a question:  make ask Q="What classes does Dr Stone teach?"  (no Q = interactive)
+#   make demo       answer every question in data/questions.txt -> output/qa_demo.txt
+#   make test-kb    Prolog rule tests (plunit) + Python tests + end-to-end question test
 #   make fetch      OPTIONAL: download the input files from URLs instead of using data/
 #   make clean      remove build products     make distclean   also remove output/ and .venv/
 #
@@ -16,6 +20,8 @@
 #   data/CTEC_Fall_2026_Schedule.xlsx --(scripts/xlsx_to_csv.py)--> data/class_schedule.csv
 #   build/schedgen + data/class_schedule.csv + data/faculty.csv --> output/*.csv, output/schedule.txt
 #   output/*.csv + scripts/export_docs.py --> output/Faculty_Schedules.docx / .xlsx
+#   output/*.csv + data/faculty.csv --(scripts/gen_prolog.py)--> output/facts.pl
+#   output/facts.pl + prolog/rules.pl --(scripts/ask.py: pyswip -> SWI-Prolog)--> answers
 # =================================================================================================
 
 # ---- Toolchain -----------------------------------------------------------------------------------
@@ -23,6 +29,7 @@ CC       := gcc
 AR       := ar
 ARFLAGS  := rcs
 PYTHON   ?= python3
+SWIPL    ?= swipl
 CPPFLAGS := -Iinclude -D_POSIX_C_SOURCE=200809L
 CFLAGS   ?= -std=c11 -O2 -g -Wall -Wextra -Wpedantic -Wshadow -Wstrict-prototypes -Wformat=2
 DEPFLAGS  = -MMD -MP
@@ -62,7 +69,7 @@ TXT_OUT  := $(OUT)/schedule.txt
 DOCX_OUT := $(OUT)/Faculty_Schedules.docx
 XLSX_OUT := $(OUT)/Faculty_Schedules.xlsx
 
-.PHONY: all lib csv run docs test inspect fetch clean distclean help venv
+.PHONY: all lib csv run docs test inspect fetch clean distclean help venv kb ask demo test-kb
 
 # ---- Default target ------------------------------------------------------------------------------
 all: $(BIN)
@@ -132,6 +139,48 @@ $(DOCX_OUT) $(XLSX_OUT): $(DOCS_STAMP)
 docs: $(DOCS_STAMP)
 	@echo "Documents written to $(DOCX_OUT) and $(XLSX_OUT)"
 
+# ---- Knowledge base: Python writes Prolog FACTS, Prolog RULES answer questions --------------------
+FACTS     := $(OUT)/facts.pl
+RULES     := prolog/rules.pl
+QUESTIONS := data/questions.txt
+QA_OUT    := $(OUT)/qa_demo.txt
+
+$(FACTS): $(SCHED_STAMP) $(FACULTY) scripts/gen_prolog.py
+	$(PYTHON) scripts/gen_prolog.py --input $(OUT) --faculty $(FACULTY) -o $@
+
+kb: $(FACTS)
+
+# One question:  make ask Q="Who teaches CTEC 350?"      Interactive:  make ask
+ask: $(FACTS) $(RULES)
+	@$(PYTHON) scripts/ask.py --facts $(FACTS) --rules $(RULES) $(if $(Q),"$(Q)")
+
+$(QA_OUT): $(FACTS) $(RULES) $(QUESTIONS) scripts/ask.py
+	$(PYTHON) scripts/ask.py --facts $(FACTS) --rules $(RULES) --file $(QUESTIONS) > $@
+	@echo "Answers written to $@"
+
+demo: $(QA_OUT)
+	@cat $(QA_OUT)
+
+# Rule tests run on facts generated from a small CS department (tests/data/cs_*.csv) through the whole
+# pipeline: C program -> gen_prolog.py -> Prolog. Then the Python unit tests and one end-to-end question.
+KB_TEST := $(BUILD)/kb_test
+test-kb: $(BIN)
+	@rm -rf $(KB_TEST)
+	@./$(BIN) -q -o $(KB_TEST) tests/data/cs_class_schedule.csv tests/data/cs_faculty.csv
+	@$(PYTHON) scripts/gen_prolog.py --input $(KB_TEST) --faculty tests/data/cs_faculty.csv -o $(KB_TEST)/facts.pl
+	$(SWIPL) -q -g "consult('$(KB_TEST)/facts.pl'), consult('$(RULES)'), consult('tests/test_rules.pl')" \
+	  -g "run_tests" -t halt
+	KB_TEST_FACTS=$(KB_TEST)/facts.pl $(PYTHON) -m unittest discover -s tests -p 'test_*.py'
+	@echo "--- end-to-end: 'What classes does Dr Tankeh teach?' ---"
+	@$(PYTHON) scripts/ask.py --facts $(KB_TEST)/facts.pl --rules $(RULES) "What classes does Dr Tankeh teach?" \
+	   | tee $(KB_TEST)/answer.txt
+	@for course in "COSC 330.001" "COSC 369.001" "COSC 631.001"; do \
+	   grep -q "$$course" $(KB_TEST)/answer.txt || { echo "FAIL: answer is missing $$course"; exit 1; }; \
+	 done; echo "PASS: end-to-end question answering"
+	@$(PYTHON) scripts/ask.py --facts $(KB_TEST)/facts.pl --rules $(RULES) --file tests/data/cs_questions.txt \
+	   > $(KB_TEST)/qa_demo.txt
+	@echo "CS department answers written to $(KB_TEST)/qa_demo.txt"
+
 venv:
 	$(PYTHON) -m venv .venv && .venv/bin/pip install -r requirements.txt
 	@echo "Now run: make docs PYTHON=.venv/bin/python"
@@ -175,6 +224,6 @@ distclean: clean
 	rm -rf $(OUT) .venv
 
 help:
-	@sed -n '2,22p' Makefile
+	@sed -n '2,24p' Makefile
 
 -include $(DEPS)

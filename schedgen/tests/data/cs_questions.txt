@@ -1,0 +1,12 @@
+# Questions for the small CS department in tests/data/cs_*.csv (answers: build/kb_test/qa_demo.txt).
+What classes does Dr Tankeh teach?
+What are Dr Tankeh's office hours?
+Which office hours are on Wednesday?
+Who teaches COSC 369?
+Who teaches operating systems?
+Which classes are in room CS 311?
+Is Dr Tankeh available on Wednesday at 4 PM?
+Is Dr Tankeh free on Monday at 10 AM?
+What does Jordan Ellis teach on Tuesday?
+Are there any conflicts?
+?- classes_of_lecturer([tankeh], Section, Code, Title).
