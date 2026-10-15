@@ -1,6 +1,7 @@
 # Questions answered by 'make demo' (output: output/qa_demo.txt). One per line; '#' lines are comments.
 # Edit freely: names, courses and days are looked up in the knowledge base, nothing here is built in.
 What classes does Dr Stone teach?
+What is Ruth Agada's schedule?
 Who teaches CTEC 350?
 Who teaches Python?
 What are Ruth Agada's office hours?

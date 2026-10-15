@@ -2,29 +2,46 @@ Q: What classes does Dr Tankeh teach?
 Dr. Tankeh (CS01) teaches 3 section(s), 9 credit hours:
 
 CLASS SCHEDULE
-  Course                               Session  Times                                   Location
-  COSC 330.001 Systems Programming I   -        Monday & Wednesday 9:30 AM to 10:45 AM  CS 311
-  COSC 369.001 Software Engineering I  -        Tuesday & Thursday 9:30 AM to 10:45 AM  CS 108
-  COSC 631.001 Database Management     -        Wednesday 5:00 PM to 7:30 PM            CS 313
+  Course                             Times                                   Location
+  COSC 330 (Systems Programming I)   Monday & Wednesday 9:30 AM to 10:45 AM  CS 311
+  COSC 369 (Software Engineering I)  Tuesday & Thursday 9:30 AM to 10:45 AM  CS 108
+  COSC 631 (Database Management)     Wednesday 5:00 PM to 7:30 PM            CS 313
+
+Q: What is Dr Tankeh's schedule?
+Dr. Tankeh (CS01) | Computer Science (COSC) | Office: CS 214
+
+CLASS SCHEDULE
+  Course                             Times                                   Location
+  COSC 330 (Systems Programming I)   Monday & Wednesday 9:30 AM to 10:45 AM  CS 311
+  COSC 369 (Software Engineering I)  Tuesday & Thursday 9:30 AM to 10:45 AM  CS 108
+  COSC 631 (Database Management)     Wednesday 5:00 PM to 7:30 PM            CS 313
+
+OFFICE HOURS
+  Monday:    10:45 AM – 1:00 PM (COSC 330)
+  Tuesday:   10:45 AM – 1:00 PM (COSC 369)
+  Wednesday: 10:45 AM – 1:00 PM (COSC 330)
+             & 3:00 – 5:00 PM (COSC 631)
+  Thursday:  10:45 AM – 1:00 PM (COSC 369)
+  Friday:
+NOTE: Instructors are not to be interrupted during class times.
 
 Q: What are Dr Tankeh's office hours?
-Dr. Tankeh (CS01)  -  location: CS 214
+Dr. Tankeh (CS01) | Computer Science (COSC) | Office: CS 214
 OFFICE HOURS
-  Monday:    10:45 AM - 1:00 PM  (COSC 330)
-  Tuesday:   10:45 AM - 1:00 PM  (COSC 369)
-  Wednesday: 10:45 AM - 1:00 PM  (COSC 330)
-             & 3:00 PM - 5:00 PM  (COSC 631)
-  Thursday:  10:45 AM - 1:00 PM  (COSC 369)
+  Monday:    10:45 AM – 1:00 PM (COSC 330)
+  Tuesday:   10:45 AM – 1:00 PM (COSC 369)
+  Wednesday: 10:45 AM – 1:00 PM (COSC 330)
+             & 3:00 – 5:00 PM (COSC 631)
+  Thursday:  10:45 AM – 1:00 PM (COSC 369)
   Friday:
-  Total: 11 h/week (required 11 h)
 NOTE: Instructors are not to be interrupted during class times.
 
 Q: Which office hours are on Wednesday?
 Office hours on Wednesday (3):
   Time                Lecturer      Location
-  9:45 AM - 10:45 AM  Jordan Ellis  CS 220
-  10:45 AM - 1:00 PM  Dr. Tankeh    CS 214
-  3:00 PM - 5:00 PM   Dr. Tankeh    CS 214
+  9:45 – 10:45 AM     Jordan Ellis  CS 220
+  10:45 AM – 1:00 PM  Dr. Tankeh    CS 214
+  3:00 – 5:00 PM      Dr. Tankeh    CS 214
 
 Q: Who teaches COSC 369?
 COSC 369 Software Engineering I is taught by:
@@ -36,9 +53,9 @@ COSC 450 Operating Systems is taught by:
 
 Q: Which classes are in room CS 311?
 Classes in room CS 311 (2):
-  Course                              Session  Times                                   Location  Lecturer
-  COSC 330.001 Systems Programming I  -        Monday & Wednesday 9:30 AM to 10:45 AM  CS 311    Dr. Tankeh
-  COSC 450.001 Operating Systems      -        Tuesday & Thursday 9:30 AM to 10:45 AM  CS 311    Jordan Ellis
+  Course                            Times                                   Location  Lecturer
+  COSC 330 (Systems Programming I)  Monday & Wednesday 9:30 AM to 10:45 AM  CS 311    Dr. Tankeh
+  COSC 450 (Operating Systems)      Tuesday & Thursday 9:30 AM to 10:45 AM  CS 311    Jordan Ellis
 
 Q: Is Dr Tankeh available on Wednesday at 4 PM?
 Yes. Dr. Tankeh is holding office hours on Wednesday at 4:00 PM.
@@ -50,9 +67,9 @@ Q: What does Jordan Ellis teach on Tuesday?
 Jordan Ellis (CS02) teaches 2 class(es) on Tuesday:
 
 CLASS SCHEDULE
-  Course                                    Session  Times                                   Location
-  COSC 450.001 Operating Systems            -        Tuesday & Thursday 9:30 AM to 10:45 AM  CS 311
-  COSC 112.002 Introduction to Programming  -        Tuesday & Thursday 1:00 PM to 2:15 PM   CS 313
+  Course                                  Times                                   Location
+  COSC 450 (Operating Systems)            Tuesday & Thursday 9:30 AM to 10:45 AM  CS 311
+  COSC 112 (Introduction to Programming)  Tuesday & Thursday 1:00 PM to 2:15 PM   CS 313
 
 Q: Are there any conflicts?
 No scheduling conflicts found.

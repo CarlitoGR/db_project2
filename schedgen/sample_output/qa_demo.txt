@@ -2,11 +2,28 @@ Q: What classes does Dr Stone teach?
 Dr. D. B. Stone (CT22) teaches 4 section(s), 13 credit hours:
 
 CLASS SCHEDULE
-  Course                                       Session  Times                                   Location
-  CTEC 120.170 Prin of SecureCoding Using Jav  7R1      Monday & Wednesday 12:00 PM to 3:15 PM  116
-  CTEC 125.555 Intro to Python programming     7R1      Asynchronous                            Online
-  CTEC 324.555 Database Appl Dev               7R2      Monday & Wednesday 4:00 PM to 6:50 PM   online
-  CTEC 125.556 Intro to Python programming     7R2      Asynchronous                            Online
+  Course                                      Session  Times                                   Location
+  CTEC 120 (Prin of SecureCoding Using Jav)   7R1      Monday & Wednesday 12:00 PM to 3:15 PM  116
+  CTEC 125.555 (Intro to Python programming)  7R1      Online asynchronous (no set time)       Online
+  CTEC 324 (Database Appl Dev)                7R2      Monday & Wednesday 4:00 PM to 6:50 PM   online
+  CTEC 125.556 (Intro to Python programming)  7R2      Online asynchronous (no set time)       Online
+
+Q: What is Ruth Agada's schedule?
+Ruth Agada (CT02) | Computer Technology (CTEC) | Office: Office TBA
+
+CLASS SCHEDULE
+  Course                                 Session  Times                                  Location
+  CTEC 402 (Software and OS Security)    7R2      Monday & Wednesday 7:00 PM to 9:50 PM  Online
+  CTEC 435 (UNIX System Administration)  7R2      Monday & Wednesday 7:00 PM to 9:50 PM  108
+  CTEC 711 (IoT Capstone I)              7R2      TBA                                    Online
+
+OFFICE HOURS
+  Monday:    4:45 – 6:45 PM (CTEC 402, CTEC 435)
+  Tuesday:
+  Wednesday: 5:45 – 6:45 PM (CTEC 402, CTEC 435)
+  Thursday:
+  Friday:
+NOTE: Instructors are not to be interrupted during class times.
 
 Q: Who teaches CTEC 350?
 CTEC 350 Prin & Meth of Intru Det & Pre is taught by:
@@ -17,56 +34,55 @@ CTEC 125 Intro to Python programming is taught by:
   Dr. D. B. Stone (CT22): CTEC 125.555 [7R1], CTEC 125.556 [7R2]
 
 Q: What are Ruth Agada's office hours?
-Ruth Agada (CT02)  -  location: Office TBA
+Ruth Agada (CT02) | Computer Technology (CTEC) | Office: Office TBA
 OFFICE HOURS
-  Monday:    4:45 PM - 6:45 PM  (CTEC 402, CTEC 435)
+  Monday:    4:45 – 6:45 PM (CTEC 402, CTEC 435)
   Tuesday:
-  Wednesday: 5:45 PM - 6:45 PM  (CTEC 402, CTEC 435)
+  Wednesday: 5:45 – 6:45 PM (CTEC 402, CTEC 435)
   Thursday:
   Friday:
-  Total: 3 h/week (required 3 h)
 NOTE: Instructors are not to be interrupted during class times.
 
 Q: Which office hours are on Wednesday?
 Office hours on Wednesday (19):
   Time                 Lecturer             Location
-  9:45 AM - 10:45 AM   J. Vega              Office TBA
-  10:45 AM - 11:45 AM  Dr. D. B. Stone      Office TBA
-  11:15 AM - 12:15 PM  Staphord Bengesi     Office TBA
-  2:45 PM - 3:45 PM    Adrian D. Carter     Office TBA
-  2:45 PM - 3:45 PM    Anthony Adedoyin     Office TBA
-  2:45 PM - 3:45 PM    Carl Dixon           Office TBA
-  2:45 PM - 3:45 PM    Courtney Lamar       Online (virtual)
-  2:45 PM - 3:45 PM    Felix Njeh           Online (virtual)
-  2:45 PM - 3:45 PM    Henri E. Cooper      Online (virtual)
-  2:45 PM - 3:45 PM    Marcella J. Wilson   Office TBA
-  2:45 PM - 3:45 PM    Victoria Lee         Office TBA
-  3:45 PM - 4:45 PM    Brett Tolbert        Office TBA
-  3:45 PM - 4:45 PM    P. Agboli            Office TBA
-  5:45 PM - 6:45 PM    Loubna Dali          Office TBA
-  5:45 PM - 6:45 PM    Marvin Bright        Online (virtual)
-  5:45 PM - 6:45 PM    Ruth Agada           Office TBA
-  5:45 PM - 6:45 PM    Stephanie R. Miller  Office TBA
-  5:45 PM - 6:45 PM    Wilbert R. Francis   Office TBA
-  7:15 PM - 8:15 PM    Dr. D. B. Stone      Office TBA
+  9:45 – 10:45 AM      J. Vega              Office TBA
+  10:45 – 11:45 AM     Dr. D. B. Stone      Office TBA
+  11:15 AM – 12:15 PM  Staphord Bengesi     Office TBA
+  2:45 – 3:45 PM       Adrian D. Carter     Office TBA
+  2:45 – 3:45 PM       Anthony Adedoyin     Office TBA
+  2:45 – 3:45 PM       Carl Dixon           Office TBA
+  2:45 – 3:45 PM       Courtney Lamar       Online (virtual)
+  2:45 – 3:45 PM       Felix Njeh           Online (virtual)
+  2:45 – 3:45 PM       Henri E. Cooper      Online (virtual)
+  2:45 – 3:45 PM       Marcella J. Wilson   Office TBA
+  2:45 – 3:45 PM       Victoria Lee         Office TBA
+  3:45 – 4:45 PM       Brett Tolbert        Office TBA
+  3:45 – 4:45 PM       P. Agboli            Office TBA
+  5:45 – 6:45 PM       Loubna Dali          Office TBA
+  5:45 – 6:45 PM       Marvin Bright        Online (virtual)
+  5:45 – 6:45 PM       Ruth Agada           Office TBA
+  5:45 – 6:45 PM       Stephanie R. Miller  Office TBA
+  5:45 – 6:45 PM       Wilbert R. Francis   Office TBA
+  7:15 – 8:15 PM       Dr. D. B. Stone      Office TBA
 
 Q: Which classes meet on Friday?
 No classes meet on Friday.
 
 Q: Which classes are in room 108?
 Classes in room 108 (6):
-  Course                                       Session  Times                                  Location  Lecturer
-  CTEC 350.170 Prin & Meth of Intru Det & Pre  7R1      Monday & Wednesday 4:00 PM to 6:50 PM  108       Anthony Adedoyin
-  CTEC 435.170 UNIX System Administration      7R1      Monday & Wednesday 7:00 PM to 9:50 PM  108       Anthony Adedoyin
-  CTEC 222.170 Linux Operating System          7R1      Tuesday & Thursday 7:00 PM to 9:50 PM  108       Curtis Roberts
-  CTEC 350.180 Prin & Meth of Intru Det & Pre  7R2      Monday & Wednesday 4:00 PM to 6:50 PM  108       Anthony Adedoyin
-  CTEC 435.180 UNIX System Administration      7R2      Monday & Wednesday 7:00 PM to 9:50 PM  108       Ruth Agada
-  CTEC 298.180 Symbolic Computation use BigDa  7R2      Tuesday & Thursday 4:00 PM to 6:50 PM  108       Jesse Bemley
+  Course                                         Session  Times                                  Location  Lecturer
+  CTEC 350.170 (Prin & Meth of Intru Det & Pre)  7R1      Monday & Wednesday 4:00 PM to 6:50 PM  108       Anthony Adedoyin
+  CTEC 435.170 (UNIX System Administration)      7R1      Monday & Wednesday 7:00 PM to 9:50 PM  108       Anthony Adedoyin
+  CTEC 222 (Linux Operating System)              7R1      Tuesday & Thursday 7:00 PM to 9:50 PM  108       Curtis Roberts
+  CTEC 350.180 (Prin & Meth of Intru Det & Pre)  7R2      Monday & Wednesday 4:00 PM to 6:50 PM  108       Anthony Adedoyin
+  CTEC 435.180 (UNIX System Administration)      7R2      Monday & Wednesday 7:00 PM to 9:50 PM  108       Ruth Agada
+  CTEC 298 (Symbolic Computation use BigDa)      7R2      Tuesday & Thursday 4:00 PM to 6:50 PM  108       Jesse Bemley
 
 Q: Where does CTEC 435 meet?
-  Course                                   Session  Times                                  Location  Lecturer
-  CTEC 435.170 UNIX System Administration  7R1      Monday & Wednesday 7:00 PM to 9:50 PM  108       Anthony Adedoyin
-  CTEC 435.180 UNIX System Administration  7R2      Monday & Wednesday 7:00 PM to 9:50 PM  108       Ruth Agada
+  Course                                     Session  Times                                  Location  Lecturer
+  CTEC 435.170 (UNIX System Administration)  7R1      Monday & Wednesday 7:00 PM to 9:50 PM  108       Anthony Adedoyin
+  CTEC 435.180 (UNIX System Administration)  7R2      Monday & Wednesday 7:00 PM to 9:50 PM  108       Ruth Agada
 
 Q: Is Dr Stone available on Monday at 3 PM?
 No. Dr. D. B. Stone is teaching CTEC 120.170 on Monday at 3:00 PM. Instructors are not to be interrupted during class times.

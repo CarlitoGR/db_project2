@@ -1,6 +1,7 @@
 % =================================================================================================
-% plunit tests for prolog/rules.pl. Run by 'make test-kb' against facts generated from the small CS
-% department in tests/data/cs_*.csv (C program -> gen_prolog.py), so they test the whole pipeline.
+% plunit tests for prolog/rules.pl. Run by 'make test-kb' against a knowledge base generated from the small CS
+% department in tests/data/cs_*.csv (C program -> gen_prolog.py -> knowledge_base.pl), so they test the
+% whole pipeline.
 %
 %   Dr. Tankeh (CS01): COSC 330.001 MW 9:30-10:45, COSC 369.001 TR 9:30-10:45, COSC 631.001 W 5:00-7:30
 %                      office hours (lecturer-supplied) MTWR 10:45-1:00 and W 3:00-5:00
@@ -45,6 +46,7 @@ test(teaches_on_friday, [fail]) :- teaches_on('CS01', friday).
 test(title_search, [nondet, true(Code == 'COSC 631')]) :- course_title_contains(database, Code).
 
 test(meeting_text) :- meeting_text('COSC 330.001', 'Monday & Wednesday 9:30 AM to 10:45 AM').
+test(meeting_label_tba) :- meeting_label(tba, 'TBA').
 
 test(load, [true(S-C == 3-9)]) :- teaching_load('CS01', S, C).
 

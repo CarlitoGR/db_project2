@@ -9,7 +9,7 @@
 #   build          -Werror build, static library, inspect archive -> artifact
 #   test           unit + end-to-end tests (GCC and Clang) | ASan/UBSan | Valgrind
 #   docs           Word / Excel / text schedules -> downloadable artifact
-#   knowledge-base Python -> Prolog facts; plunit rule tests, Python tests, Q&A demo -> artifact
+#   knowledge-base Python -> Prolog knowledge base; plunit rule tests, Python tests, Q&A demo -> artifact
 #   data-quality   annotates every conflict in the class schedule as a workflow warning
 # =================================================================================================
 
@@ -225,9 +225,9 @@ jobs:
         with:
           name: knowledge-base
           path: |
-            schedgen/output/facts.pl
+            schedgen/output/knowledge_base.pl
             schedgen/output/qa_demo.txt
-            schedgen/build/kb_test/facts.pl
+            schedgen/build/kb_test/knowledge_base.pl
             schedgen/build/kb_test/qa_demo.txt
           retention-days: 30
           if-no-files-found: error

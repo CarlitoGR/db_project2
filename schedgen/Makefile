@@ -7,7 +7,7 @@
 #   make test       build and run unit tests + an end-to-end conflict test
 #   make inspect    show what is inside the static library (ar -t, nm)
 #   make csv        export the department workbook (.xlsx) to the CSV the C program reads
-#   make kb         Python turns the program's output into Prolog facts (output/facts.pl)
+#   make kb         Python writes the Prolog knowledge base, rules + facts (output/knowledge_base.pl)
 #   make ask        ask a question:  make ask Q="What classes does Dr Stone teach?"  (no Q = interactive)
 #   make demo       answer every question in data/questions.txt -> output/qa_demo.txt
 #   make test-kb    Prolog rule tests (plunit) + Python tests + end-to-end question test
@@ -20,8 +20,8 @@
 #   data/CTEC_Fall_2026_Schedule.xlsx --(scripts/xlsx_to_csv.py)--> data/class_schedule.csv
 #   build/schedgen + data/class_schedule.csv + data/faculty.csv --> output/*.csv, output/schedule.txt
 #   output/*.csv + scripts/export_docs.py --> output/Faculty_Schedules.docx / .xlsx
-#   output/*.csv + data/faculty.csv --(scripts/gen_prolog.py)--> output/facts.pl
-#   output/facts.pl + prolog/rules.pl --(scripts/ask.py: pyswip -> SWI-Prolog)--> answers
+#   output/*.csv + data/faculty.csv + prolog/rules.pl --(scripts/gen_prolog.py)--> output/knowledge_base.pl
+#   output/knowledge_base.pl --(scripts/ask.py: pyswip -> SWI-Prolog)--> answers
 # =================================================================================================
 
 # ---- Toolchain -----------------------------------------------------------------------------------
@@ -139,45 +139,46 @@ $(DOCX_OUT) $(XLSX_OUT): $(DOCS_STAMP)
 docs: $(DOCS_STAMP)
 	@echo "Documents written to $(DOCX_OUT) and $(XLSX_OUT)"
 
-# ---- Knowledge base: Python writes Prolog FACTS, Prolog RULES answer questions --------------------
-FACTS     := $(OUT)/facts.pl
+# ---- Knowledge base: Python writes Prolog RULES + FACTS, Prolog answers questions ----------------
+KB        := $(OUT)/knowledge_base.pl
 RULES     := prolog/rules.pl
 QUESTIONS := data/questions.txt
 QA_OUT    := $(OUT)/qa_demo.txt
 
-$(FACTS): $(SCHED_STAMP) $(FACULTY) scripts/gen_prolog.py
-	$(PYTHON) scripts/gen_prolog.py --input $(OUT) --faculty $(FACULTY) -o $@
+$(KB): $(SCHED_STAMP) $(FACULTY) $(RULES) scripts/gen_prolog.py
+	$(PYTHON) scripts/gen_prolog.py --input $(OUT) --faculty $(FACULTY) --rules $(RULES) -o $@
 
-kb: $(FACTS)
+kb: $(KB)
 
 # One question:  make ask Q="Who teaches CTEC 350?"      Interactive:  make ask
-ask: $(FACTS) $(RULES)
-	@$(PYTHON) scripts/ask.py --facts $(FACTS) --rules $(RULES) $(if $(Q),"$(Q)")
+ask: $(KB)
+	@$(PYTHON) scripts/ask.py --kb $(KB) $(if $(Q),"$(Q)")
 
-$(QA_OUT): $(FACTS) $(RULES) $(QUESTIONS) scripts/ask.py
-	$(PYTHON) scripts/ask.py --facts $(FACTS) --rules $(RULES) --file $(QUESTIONS) > $@
+$(QA_OUT): $(KB) $(QUESTIONS) scripts/ask.py
+	$(PYTHON) scripts/ask.py --kb $(KB) --file $(QUESTIONS) > $@
 	@echo "Answers written to $@"
 
 demo: $(QA_OUT)
 	@cat $(QA_OUT)
 
-# Rule tests run on facts generated from a small CS department (tests/data/cs_*.csv) through the whole
+# The tests use a knowledge base built from a small CS department (tests/data/cs_*.csv) by the whole
 # pipeline: C program -> gen_prolog.py -> Prolog. Then the Python unit tests and one end-to-end question.
 KB_TEST := $(BUILD)/kb_test
 test-kb: $(BIN)
 	@rm -rf $(KB_TEST)
 	@./$(BIN) -q -o $(KB_TEST) tests/data/cs_class_schedule.csv tests/data/cs_faculty.csv
-	@$(PYTHON) scripts/gen_prolog.py --input $(KB_TEST) --faculty tests/data/cs_faculty.csv -o $(KB_TEST)/facts.pl
-	$(SWIPL) -q -g "consult('$(KB_TEST)/facts.pl'), consult('$(RULES)'), consult('tests/test_rules.pl')" \
-	  -g "run_tests" -t halt
-	KB_TEST_FACTS=$(KB_TEST)/facts.pl $(PYTHON) -m unittest discover -s tests -p 'test_*.py'
+	@$(PYTHON) scripts/gen_prolog.py --input $(KB_TEST) --faculty tests/data/cs_faculty.csv --rules $(RULES) \
+	   -o $(KB_TEST)/knowledge_base.pl
+	$(SWIPL) -q -g "consult('$(KB_TEST)/knowledge_base.pl'), consult('tests/test_rules.pl')" -g "run_tests" -t halt
+	KB_TEST_KB=$(KB_TEST)/knowledge_base.pl $(PYTHON) -m unittest discover -s tests -p 'test_*.py'
 	@echo "--- end-to-end: 'What classes does Dr Tankeh teach?' ---"
-	@$(PYTHON) scripts/ask.py --facts $(KB_TEST)/facts.pl --rules $(RULES) "What classes does Dr Tankeh teach?" \
+	@$(PYTHON) scripts/ask.py --kb $(KB_TEST)/knowledge_base.pl "What classes does Dr Tankeh teach?" \
 	   | tee $(KB_TEST)/answer.txt
-	@for course in "COSC 330.001" "COSC 369.001" "COSC 631.001"; do \
-	   grep -q "$$course" $(KB_TEST)/answer.txt || { echo "FAIL: answer is missing $$course"; exit 1; }; \
+	@for course in "COSC 330 (Systems Programming I)" "COSC 369 (Software Engineering I)" \
+	               "COSC 631 (Database Management)"; do \
+	   grep -qF "$$course" $(KB_TEST)/answer.txt || { echo "FAIL: answer is missing $$course"; exit 1; }; \
 	 done; echo "PASS: end-to-end question answering"
-	@$(PYTHON) scripts/ask.py --facts $(KB_TEST)/facts.pl --rules $(RULES) --file tests/data/cs_questions.txt \
+	@$(PYTHON) scripts/ask.py --kb $(KB_TEST)/knowledge_base.pl --file tests/data/cs_questions.txt \
 	   > $(KB_TEST)/qa_demo.txt
 	@echo "CS department answers written to $(KB_TEST)/qa_demo.txt"
 

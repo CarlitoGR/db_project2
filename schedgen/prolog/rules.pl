@@ -1,9 +1,10 @@
 % =================================================================================================
-% Prolog knowledge base: RULES (hand-written).
+% Prolog RULE LIBRARY (hand-written).
 %
-% The FACTS come from scripts/gen_prolog.py (output/facts.pl). Load both, facts first:
+% scripts/gen_prolog.py writes the knowledge base output/knowledge_base.pl: these rules, followed by
+% the FACTS it generates from the schedule data. Load the knowledge base, then query:
 %
-%     swipl output/facts.pl prolog/rules.pl
+%     swipl output/knowledge_base.pl
 %     ?- classes_of_lecturer([stone], Section, Code, Title).
 %
 % Python (scripts/ask.py) turns an English question into one of the queries below and prints the
@@ -120,8 +121,13 @@ meeting_text(Section, Text) :-
         time_range(Start, End, Range),
         format(atom(Text), '~w ~w', [DayText, Range])
     ;   section(Section, _, _, Meeting, _),
-        day_label(Meeting, Text)
+        meeting_label(Meeting, Text)
     ).
+
+% meeting_label(+Meeting, -Text): sections without a weekly meeting time.
+meeting_label(tba, 'TBA') :- !.
+meeting_label(asynchronous, 'Online asynchronous (no set time)') :- !.
+meeting_label(Other, Text) :- day_label(Other, Text).
 
 % section_sort_key(+Section, -DayOrder, -Start): the earliest weekly meeting, for listing classes in week
 % order. Sections with no meeting time (TBA, asynchronous) sort last.

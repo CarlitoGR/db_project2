@@ -24,9 +24,10 @@ tables in the assignment. All scheduling logic lives in a **static library**, `l
 thin driver linked against it.
 
 **Midterm extension.** The system now also answers questions such as *"What classes does Dr Tankeh teach?"* or
-*"Which office hours are on Wednesday?"*. A Python script reads the program's output and writes it as Prolog
-**facts**; hand-written Prolog **rules** describe how those facts relate; and a Python front end (using the
-`pyswip` bridge) turns an English question into a Prolog query, which SWI-Prolog answers by search. Section 11
+*"Which office hours are on Wednesday?"*. A Python script reads the program's output and generates the Prolog
+**knowledge base**, one file holding the **rules** (how the facts relate) and the **facts** (the schedule); and a
+Python front end (using the `pyswip` bridge) turns an English question into a Prolog query, which SWI-Prolog
+answers by search. Section 11
 describes this part.
 
 ## 1.1 Requirements traceability
@@ -47,8 +48,9 @@ describes this part.
 | Explain Internet vs. local input files | §8 |
 | Submit source, headers, library, Makefile, inputs, Python, sample output, README | Appendix A |
 | **Midterm:** answer questions such as "What classes does Dr Tankeh teach?" | `scripts/ask.py` + Prolog; `make ask Q="..."` (§11) |
-| **Midterm:** Python reads the schedule data and generates Prolog facts | `scripts/gen_prolog.py` → `output/facts.pl` (§11.3) |
-| **Midterm:** Prolog stores knowledge as facts and rules | `output/facts.pl` (generated) + `prolog/rules.pl` (hand-written) (§11.3–11.4) |
+| **Midterm:** Python reads the schedule data and generates facts and rules for Prolog | `scripts/gen_prolog.py` → `output/knowledge_base.pl` (§11.2–11.4) |
+| **Midterm:** Prolog stores knowledge as facts and rules | `output/knowledge_base.pl`: part 1 rules, part 2 facts (§11.3–11.4) |
+| **Midterm:** output in the style of the sample | "What is Dr Tankeh's schedule?" prints CLASS SCHEDULE / OFFICE HOURS / NOTE in the sample's layout (§11.7) |
 | **Midterm:** Prolog acts as the interpreter that answers questions | `pyswip` consults both files and runs each query in SWI-Prolog (§11.5) |
 
 # 2. System design
@@ -77,7 +79,7 @@ describes this part.
                        │
         ┌──────────────┴───────────────────────┐
         ▼  make docs: export_docs.py            ▼  make kb: gen_prolog.py   (midterm)
- Faculty_Schedules.docx / .xlsx          output/facts.pl  +  prolog/rules.pl
+ Faculty_Schedules.docx / .xlsx       output/knowledge_base.pl (rules + facts)
                                                 ▼  make ask: ask.py ──pyswip──► SWI-Prolog
                                          "What classes does Dr Tankeh teach?" ──► answer
 ```
@@ -400,8 +402,8 @@ everything downstream automatically.
 | Valgrind `--leak-check=full` on the CTEC data | No leaks, no errors |
 | GCC `-Wall -Wextra -Wpedantic -Wshadow -Wformat=2`; Clang with `-Wconversion` | Zero warnings |
 | Ruff (Python, 120-character lines) | Clean |
-| `make test-kb`: 34 Prolog rule tests (plunit): time formatting and overlap, name matching, who-teaches-what, office-hours labelling, availability, policy, and conflict rules (injected clashes must be found; 7R1 vs 7R2 must not clash) | All pass |
-| `make test-kb`: 20 Python tests: fact-generator helpers (atom escaping, times, days, rooms, name tokens) and question answering in six phrasings of "What classes does Dr Tankeh teach?" plus office hours, rooms, availability, misspelled names and raw queries | All pass |
+| `make test-kb`: 35 Prolog rule tests (plunit): time formatting and overlap, name matching, who-teaches-what, office-hours labelling, availability, policy, and conflict rules (injected clashes must be found; 7R1 vs 7R2 must not clash) | All pass |
+| `make test-kb`: 22 Python tests: fact-generator helpers (atom escaping, times, days, rooms, name tokens) and question answering in six phrasings of "What classes does Dr Tankeh teach?" plus the full schedule in the sample's layout, office hours, rooms, availability, misspelled names and raw queries | All pass |
 | End-to-end: CS input files → C program → `gen_prolog.py` → Prolog; the answer to "What classes does Dr Tankeh teach?" must list COSC 330, 369 and 631 | Pass |
 | Cross-check: the Prolog conflict rules find exactly the same 3 conflicts in the CTEC data as the C program | Pass |
 
@@ -462,8 +464,8 @@ Python and Prolog split the work the way the assignment describes:
 | Component | Role | File |
 |---|---|---|
 | C program (unchanged) | Reads the two input files, validates and normalises them, assigns office hours | `build/schedgen` |
-| Python, step 1 | **Reads** the schedule data and **generates Prolog facts** | `scripts/gen_prolog.py` |
-| Prolog knowledge base | **Stores knowledge**: generated facts plus hand-written rules | `output/facts.pl`, `prolog/rules.pl` |
+| Python, step 1 | **Reads** the schedule data and **generates the facts and rules** for Prolog | `scripts/gen_prolog.py` |
+| Prolog knowledge base | **Stores knowledge**: part 1 rules (from the rule library `prolog/rules.pl`), part 2 facts | `output/knowledge_base.pl` |
 | Python, step 2 | Front end: recognises the question, builds a Prolog query, formats the answer | `scripts/ask.py` |
 | SWI-Prolog (via `pyswip`) | **Interpreter**: answers each query by searching the facts with the rules | — |
 
@@ -473,9 +475,9 @@ No answer is computed in Python. Python only translates: data → facts, and que
 
 ```
  class_schedule.csv ─┐                        ┌─► classes.csv ──────┐
-                     ├─► schedgen (C) ────────┼─► office_hours.csv ─┼─► gen_prolog.py ─► facts.pl ─┐
- faculty.csv ────────┘                        └─► faculty_summary   │                             │
-          └──────────────────── aliases, required hours ────────────┘          rules.pl ──────────┤
+                     ├─► schedgen (C) ────────┼─► office_hours.csv ─┼─► gen_prolog.py ──► knowledge_base.pl
+ faculty.csv ────────┘                        └─► faculty_summary   │        ▲            (rules + facts)
+          └──────────────────── aliases, required hours ────────────┘   prolog/rules.pl          │
                                                                                                   ▼
  "What classes does Dr Tankeh teach?" ─► ask.py ─► classes_of_lecturer([tankeh], S, C, T) ─► SWI-Prolog
                                             ▲                                                     │
@@ -488,6 +490,12 @@ sections and generates the office hours. Re-implementing that in Python would cr
 could disagree with the first. Reading the normalised CSV keeps one source of truth, and the knowledge base
 contains exactly the schedule that the Word and Excel documents show. The faculty file is read directly as
 well, for the name aliases used to match questions.
+
+**One knowledge base file.** `gen_prolog.py` writes `output/knowledge_base.pl` in two parts: **part 1, rules**,
+copied from the rule library `prolog/rules.pl`, and **part 2, facts**, generated from the data. Python therefore
+produces everything Prolog needs, and Prolog loads it with a single `consult("knowledge_base.pl")`, as in the
+`pyswip` example in the assignment. The rules are kept in their own source file because they do not depend on
+the data: the same rules serve the CTEC schedule and the CS department, and they can be tested on their own.
 
 ## 11.3 Facts: what Prolog knows
 
@@ -514,7 +522,7 @@ file changes, and contains no timestamp, so the same input always gives a byte-i
 
 ## 11.4 Rules: how the facts relate
 
-The rules in `prolog/rules.pl` are written by hand and are independent of any particular department. Each
+The rules (part 1 of the knowledge base, maintained in `prolog/rules.pl`) are written by hand and are independent of any particular department. Each
 answers one kind of question.
 
 | Rule | Question it answers |
@@ -581,13 +589,13 @@ The `pyswip` calls follow the pattern in the assignment notes:
 from pyswip import Prolog
 
 prolog = Prolog()
-prolog.consult("output/facts.pl")      # generated facts
-prolog.consult("prolog/rules.pl")      # hand-written rules
+prolog.consult("output/knowledge_base.pl")   # rules + facts, generated by gen_prolog.py
 for row in prolog.query("lecturer_named([tankeh], Id), teaches(Id, Section)"):
     print(row["Section"])               # COSC 330.001, COSC 369.001, COSC 631.001
 ```
 
-Questions it understands include: what classes a lecturer teaches (optionally on one day); who teaches a course,
+Questions it understands include: a lecturer's full schedule (classes and office hours, in the sample's
+layout); what classes a lecturer teaches (optionally on one day); who teaches a course,
 by code or by title words; a lecturer's office hours; which office hours or classes fall on a day; which classes
 are in a room; where and when a course meets; whether a lecturer is available at a given time; how many sections
 a lecturer teaches; conflicts and data issues; and the list of lecturers. Any Prolog goal can also be typed
@@ -599,19 +607,19 @@ Dr. D. B. Stone?"), and a name that is not in the data gets a clear answer inste
 ```bash
 sudo apt-get install swi-prolog-nox          # SWI-Prolog 8.4.2+ (Windows/macOS: swi-prolog.org installer)
 python3 -m pip install -r requirements.txt   # python-docx, openpyxl, pyswip
-make kb                                      # C program (if needed) -> output/facts.pl
+make kb                                      # C program (if needed) -> output/knowledge_base.pl
 make ask Q="What classes does Dr Tankeh teach?"
 make ask                                     # interactive: type questions, 'quit' to leave
 make demo                                    # data/questions.txt -> output/qa_demo.txt
 make test-kb                                 # Prolog + Python tests and the end-to-end question
-swipl output/facts.pl prolog/rules.pl        # use Prolog directly
+swipl output/knowledge_base.pl               # use Prolog directly
 ```
 
 Python and SWI-Prolog must both be 64-bit. If `pyswip` cannot find the Prolog library, set `SWI_HOME_DIR` to the
 directory printed by `swipl --dump-runtime-variables | grep PLBASE`.
 
-`make` treats the knowledge base like any other generated file: `output/facts.pl` depends on the C program's
-output, the faculty file and `gen_prolog.py`, so editing either input file and running `make ask` re-runs the C
+`make` treats the knowledge base like any other generated file: `output/knowledge_base.pl` depends on the C
+program's output, the faculty file, the rule library and `gen_prolog.py`, so editing either input file and running `make ask` re-runs the C
 program, regenerates the facts, and answers from the new data.
 
 ## 11.7 Sample session
@@ -633,30 +641,37 @@ Q: What classes does Dr Tankeh teach?
 Dr. Tankeh (CS01) teaches 3 section(s), 9 credit hours:
 
 CLASS SCHEDULE
-  Course                               Session  Times                                   Location
-  COSC 330.001 Systems Programming I   -        Monday & Wednesday 9:30 AM to 10:45 AM  CS 311
-  COSC 369.001 Software Engineering I  -        Tuesday & Thursday 9:30 AM to 10:45 AM  CS 108
-  COSC 631.001 Database Management     -        Wednesday 5:00 PM to 7:30 PM            CS 313
+  Course                             Times                                   Location
+  COSC 330 (Systems Programming I)   Monday & Wednesday 9:30 AM to 10:45 AM  CS 311
+  COSC 369 (Software Engineering I)  Tuesday & Thursday 9:30 AM to 10:45 AM  CS 108
+  COSC 631 (Database Management)     Wednesday 5:00 PM to 7:30 PM            CS 313
 
-Q: What are Dr Tankeh's office hours?
-Dr. Tankeh (CS01)  -  location: CS 214
+Q: What is Dr Tankeh's schedule?
+Dr. Tankeh (CS01) | Computer Science (COSC) | Office: CS 214
+
+CLASS SCHEDULE
+  Course                             Times                                   Location
+  COSC 330 (Systems Programming I)   Monday & Wednesday 9:30 AM to 10:45 AM  CS 311
+  COSC 369 (Software Engineering I)  Tuesday & Thursday 9:30 AM to 10:45 AM  CS 108
+  COSC 631 (Database Management)     Wednesday 5:00 PM to 7:30 PM            CS 313
+
 OFFICE HOURS
-  Monday:    10:45 AM - 1:00 PM  (COSC 330)
-  Tuesday:   10:45 AM - 1:00 PM  (COSC 369)
-  Wednesday: 10:45 AM - 1:00 PM  (COSC 330)
-             & 3:00 PM - 5:00 PM  (COSC 631)
-  Thursday:  10:45 AM - 1:00 PM  (COSC 369)
+  Monday:    10:45 AM – 1:00 PM (COSC 330)
+  Tuesday:   10:45 AM – 1:00 PM (COSC 369)
+  Wednesday: 10:45 AM – 1:00 PM (COSC 330)
+             & 3:00 – 5:00 PM (COSC 631)
+  Thursday:  10:45 AM – 1:00 PM (COSC 369)
   Friday:
-  Total: 11 h/week (required 11 h)
 NOTE: Instructors are not to be interrupted during class times.
 
 Q: Is Dr Tankeh free on Monday at 10 AM?
-No. Dr. Tankeh is teaching COSC 330.001 on Monday at 10:00 AM. Instructors are not to be interrupted during
-class times.
+No. Dr. Tankeh is teaching COSC 330.001 on Monday at 10:00 AM. Instructors are not to be interrupted during class times.
 ```
 
-The office-hours answer follows the layout of the sample in the specification: the same days, blocks and
-course labels. On the CTEC data
+The second answer reproduces the sample in the specification: the Course / Times / Location table with courses
+written as "COSC 631 (Database Management)", every weekday listed under OFFICE HOURS (Friday empty), each block
+labelled with its course, the "3:00 – 5:00 PM" style, and the closing NOTE. The Session column appears only when
+the data has part-of-term sessions, as the CTEC schedule does. On the CTEC data
 (`sample_output/qa_demo.txt`):
 
 ```
@@ -716,8 +731,8 @@ Q: Are there any conflicts?
 | `scripts/xlsx_to_csv.py`, `scripts/export_docs.py`, `requirements.txt` | Python steps |
 | `scripts/gen_prolog.py` | Midterm: schedule data → Prolog facts |
 | `scripts/ask.py` | Midterm: question front end (pyswip → SWI-Prolog) |
-| `prolog/rules.pl` | Midterm: hand-written Prolog rules |
+| `prolog/rules.pl` | Midterm: Prolog rule library (part 1 of the generated knowledge base) |
 | `data/questions.txt` | Midterm: questions answered by `make demo` |
 | `tests/` | C unit tests, conflict test data, Prolog rule tests (`test_rules.pl`), Python tests (`test_kb.py`), CS department used for the Dr Tankeh example (`data/cs_*.csv`) |
-| `sample_output/` | `schedule.txt`, CSV files, `diagnostics.txt`, `.docx`, `.xlsx`, `facts.pl`, `qa_demo.txt`, `qa_demo_cs.txt` from a reference run |
+| `sample_output/` | `schedule.txt`, CSV files, `diagnostics.txt`, `.docx`, `.xlsx`, `knowledge_base.pl`, `qa_demo.txt`, `qa_demo_cs.txt` from a reference run |
 | `docs/report.pdf`, `docs/report.md` | This report and its source |

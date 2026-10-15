@@ -66,7 +66,7 @@ needed only when the `.xlsx` changes or for `make docs`.
 | `docs` | Runs `scripts/export_docs.py` to produce `.docx` and `.xlsx` (only if the output changed) |
 | `test` | Builds `build/test_schedule` (linked against the same library) and runs it, then runs the program on deliberately broken inputs in `tests/data/` and checks each problem is caught |
 | `inspect` | Lists the object files inside the library (`ar -t`) and its exported functions (`nm`) |
-| `kb` | Midterm: `scripts/gen_prolog.py` writes the C output as Prolog facts, `output/facts.pl` (only if the output changed) |
+| `kb` | Midterm: `scripts/gen_prolog.py` writes the Prolog knowledge base `output/knowledge_base.pl`: rules + facts from the C output (only if something changed) |
 | `ask` | Midterm: `make ask Q="..."` answers one question; `make ask` alone is interactive |
 | `demo` | Midterm: answers every question in `data/questions.txt` → `output/qa_demo.txt` |
 | `test-kb` | Midterm: Prolog rule tests (plunit), Python tests, and the end-to-end "Dr Tankeh" question on `tests/data/cs_*.csv` |
@@ -150,7 +150,7 @@ to replace "Office TBA".
 | `diagnostics.txt` | C program | Every error / warning / info message |
 | `Faculty_Schedules.docx` | Python | Page 1: data issues. Then one page per professor, in the sample's table style |
 | `Faculty_Schedules.xlsx` | Python | Summary, Classes, Office Hours, Data Issues, one sheet per professor |
-| `facts.pl` | Python (`make kb`) | Prolog facts: faculty, courses, sections, meetings, rooms, office hours, data issues |
+| `knowledge_base.pl` | Python (`make kb`) | Prolog knowledge base: the rules from `prolog/rules.pl` + facts (faculty, courses, sections, meetings, rooms, office hours, data issues) |
 | `qa_demo.txt` | Python + Prolog (`make demo`) | Answers to the questions in `data/questions.txt` |
 
 ## 8. How office hours are assigned
@@ -174,7 +174,7 @@ schedgen/
 ├── src/lib/            common.c csv.c diag.c loader.c report.c scheduler.c timeutil.c -> libschedule.a
 ├── data/               CTEC_Fall_2026_Schedule.xlsx, class_schedule.csv (export), faculty.csv
 ├── scripts/            xlsx_to_csv.py, export_docs.py, gen_prolog.py (facts), ask.py (questions)
-├── prolog/             rules.pl: hand-written Prolog rules
+├── prolog/             rules.pl: the Prolog rule library (copied into the knowledge base by gen_prolog.py)
 ├── tests/              C unit tests, broken inputs, test_rules.pl (plunit), test_kb.py, CS department (data/cs_*)
 ├── sample_output/      output from a reference run
 └── docs/               project report (PDF + Markdown source)
@@ -184,10 +184,10 @@ schedgen/
 
 | Part | Role |
 |------|------|
-| `scripts/gen_prolog.py` | **Python reads** the schedule (the C program's normalised CSV output + `data/faculty.csv`) and **generates Prolog facts** in `output/facts.pl` |
-| `prolog/rules.pl` | Hand-written **rules**: who teaches what, office hours by day, availability, conflicts, workload |
+| `scripts/gen_prolog.py` | **Python reads** the schedule (the C program's normalised CSV output + `data/faculty.csv`) and **generates the facts and rules for Prolog**: one file, `output/knowledge_base.pl` |
+| `prolog/rules.pl` | The rule library gen_prolog.py puts in the knowledge base: who teaches what, office hours by day, availability, conflicts, workload |
 | `scripts/ask.py` | Front end: recognises the question, builds a Prolog query, prints the answer |
-| SWI-Prolog via `pyswip` | **Interpreter**: loads facts + rules and answers each query by search |
+| SWI-Prolog via `pyswip` | **Interpreter**: `consult("knowledge_base.pl")`, then answers each query by search |
 
 ### Setup
 
@@ -206,14 +206,15 @@ make ask Q="What classes does Dr Stone teach?"
 make ask                                         # interactive: ask> ...   ('help' lists examples, 'quit' exits)
 python3 scripts/ask.py "Who teaches CTEC 350?"   # same thing without make (after 'make kb')
 make demo                                        # every question in data/questions.txt -> output/qa_demo.txt
-swipl output/facts.pl prolog/rules.pl            # query Prolog directly: ?- lecturer_of('CTEC 350', N).
+swipl output/knowledge_base.pl                   # query Prolog directly: ?- lecturer_of('CTEC 350', N).
 ```
 
 Questions it understands (names, courses, days and rooms are looked up in the data):
 
 | Kind | Examples |
 |------|----------|
-| A lecturer's classes | What classes does Dr Stone teach? · What does Agada teach on Monday? · Dixon's schedule |
+| A lecturer's classes | What classes does Dr Stone teach? · What does Agada teach on Monday? · Dixon's classes |
+| Full schedule (sample layout) | What is Dr Stone's schedule? · Schedule for Ruth Agada (CLASS SCHEDULE + OFFICE HOURS + NOTE) |
 | Who teaches a course | Who teaches CTEC 350? · Who teaches Python? · Who is the instructor for UNIX System Administration? |
 | Office hours | What are Ruth Agada's office hours? · Which office hours are on Wednesday? |
 | Days and rooms | Which classes meet on Tuesday? · Which classes are in room 108? · Who teaches on Friday? |
@@ -227,25 +228,35 @@ Questions it understands (names, courses, days and rooms are looked up in the da
 The CTEC schedule has no Dr Tankeh, so on that data the system says so. `tests/data/cs_class_schedule.csv` and
 `tests/data/cs_faculty.csv` describe a small CS department whose Dr Tankeh entries (COSC 631, 369, 330 and the
 lecturer-supplied office hours) come from the sample in the project specification. `make test-kb` runs the
-whole pipeline on those two files and checks the answer. Output: `sample_output/qa_demo_cs.txt`:
+whole pipeline on those two files and checks the answer. `sample_output/qa_demo_cs.txt` has the answers; the
+full schedule matches the sample in the specification:
 
 ```
-Q: What classes does Dr Tankeh teach?
-Dr. Tankeh (CS01) teaches 3 section(s), 9 credit hours:
+Q: What is Dr Tankeh's schedule?
+Dr. Tankeh (CS01) | Computer Science (COSC) | Office: CS 214
 
 CLASS SCHEDULE
-  Course                               Session  Times                                   Location
-  COSC 330.001 Systems Programming I   -        Monday & Wednesday 9:30 AM to 10:45 AM  CS 311
-  COSC 369.001 Software Engineering I  -        Tuesday & Thursday 9:30 AM to 10:45 AM  CS 108
-  COSC 631.001 Database Management     -        Wednesday 5:00 PM to 7:30 PM            CS 313
+  Course                             Times                                   Location
+  COSC 330 (Systems Programming I)   Monday & Wednesday 9:30 AM to 10:45 AM  CS 311
+  COSC 369 (Software Engineering I)  Tuesday & Thursday 9:30 AM to 10:45 AM  CS 108
+  COSC 631 (Database Management)     Wednesday 5:00 PM to 7:30 PM            CS 313
+
+OFFICE HOURS
+  Monday:    10:45 AM – 1:00 PM (COSC 330)
+  Tuesday:   10:45 AM – 1:00 PM (COSC 369)
+  Wednesday: 10:45 AM – 1:00 PM (COSC 330)
+             & 3:00 – 5:00 PM (COSC 631)
+  Thursday:  10:45 AM – 1:00 PM (COSC 369)
+  Friday:
+NOTE: Instructors are not to be interrupted during class times.
 ```
 
 The same three steps work for any pair of input files, e.g. the CS department:
 
 ```bash
 build/schedgen -o out_cs tests/data/cs_class_schedule.csv tests/data/cs_faculty.csv
-python3 scripts/gen_prolog.py --input out_cs --faculty tests/data/cs_faculty.csv -o out_cs/facts.pl
-python3 scripts/ask.py --facts out_cs/facts.pl "What are Dr Tankeh's office hours?"
+python3 scripts/gen_prolog.py --input out_cs --faculty tests/data/cs_faculty.csv -o out_cs/knowledge_base.pl
+python3 scripts/ask.py --kb out_cs/knowledge_base.pl "What is Dr Tankeh's schedule?"
 ```
 
 The report (`docs/report.pdf`, §11) explains the design, the fact and rule schema, and how a question is

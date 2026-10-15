@@ -1,5 +1,6 @@
 # Questions for the small CS department in tests/data/cs_*.csv (answers: build/kb_test/qa_demo.txt).
 What classes does Dr Tankeh teach?
+What is Dr Tankeh's schedule?
 What are Dr Tankeh's office hours?
 Which office hours are on Wednesday?
 Who teaches COSC 369?
